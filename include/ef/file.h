@@ -2,7 +2,7 @@
 #define __EF_FILE_H__
 
 #include <ef/type.h>
-#include <ef/rbuffer.h>
+//#include <ef/rbuffer.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -260,7 +260,7 @@ err_t fd_copy(int fdo, int fdi);
  * @param size read all element setting by size, not exit before
  * @return -1 error or count of bytes readed
  */
-ssize_t fd_read_cb(int fd, rbuffer_s* cb, void* out, size_t size);
+//ssize_t fd_read_cb(int fd, rbuffer_s* cb, void* out, size_t size);
 
 /** read line
  * @param fd file descriptor
@@ -268,7 +268,7 @@ ssize_t fd_read_cb(int fd, rbuffer_s* cb, void* out, size_t size);
  * @param withnl add new line at end of string
  * @return memory where stored string, you need to free this, otherwise return NULL
  */
-char* fd_read_cbline(int fd, rbuffer_s* cb, int withnl);
+//char* fd_read_cbline(int fd, rbuffer_s* cb, int withnl);
 
 /** only for name conventions*/
 #define fd_close(FD) close(FD)
