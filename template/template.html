@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<!-- Header -->
+<html lang="en">
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="w3-theme-black.css">
+
+<style>
+	html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+	.w3-sidebar {
+		z-index: 3;
+		width: 250px;
+		top: 43px;
+		bottom: 0;
+		height: inherit;
+	}
+</style>
+
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+	<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+		<a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)" onclick="w3_open()"><i class="fa fa-bars"></i></a>		
+
+<!--navbar.current
+<a href="&&LINK&&" class="w3-bar-item w3-button w3-theme-l1">&&NAME&&</a>
+-->
+
+<!--navbar.node
+<a href="&&LINK&&" class="w3-bar-item w3-button w3-hide-small w3-hover-white">&&NAME&&</a>
+-->
+		<!-- visual top -->
+	</div>
+</div>
+
+<!-- Sidebar -->
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+	<a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu"><i class="fa fa-remove"></i></a>
+<!--sidebar.node
+<a class="w3-bar-item w3-button w3-hover-black" href="&&LINK&&">&&NAME&&</a>
+-->
+	<!-- visual side -->
+</nav>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<div class="w3-main" style="margin-left:250px">
+
+<!--content.section
+<div class="w3-row w3-padding-64">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.section.main
+<div class="w3-twothird w3-container">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.section.extra
+<div class="w3-twothird w3-container">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.title.begin
+<h&&TITLEID&& class="w3-text-teal">
+-->
+<!--content.title.end
+</h&&TITLEID&&>
+-->
+
+<!--content.text.begin
+<p>
+-->
+<!--content.text.end
+</p>
+-->
+
+<!--content.args.begin
+<p>
+-->
+<!--content.args.end
+</p>
+-->
+<!--content.args.content
+&&TYPE&& &&NAME&&, &&DESC&&</br>
+-->
+<!--content.return
+Return type &&TYPE&& :: &&DESC&&
+-->
+
+<!--content.link
+<a href="&&LINK&&">&&NAME&&</a>
+-->
+
+<!--content.code.begin
+<pre>
+-->
+<!--content.code.end
+</pre>
+-->
+
+<!--section.macro.title
+MACRO
+-->
+<!--section.macro.desc
+list of macro
+-->
+
+<!--section.enum.title
+ENUM
+-->
+<!--section.enum.desc
+list of enum
+-->
+
+<!--section.type.title
+TYPE
+-->
+<!--section.type.desc
+list of type
+-->
+
+<!--section.struct.title
+STRUCT
+-->
+<!--section.struct.desc
+list of struct
+-->
+
+<!--section.fn.title
+API
+-->
+<!--section.fn.desc
+list of functions
+-->
+
+	<!-- content -->
+</div>
+
+<footer id="myFooter">
+	<div class="w3-container w3-theme-l2 w3-padding-32">
+		<h4>Footer</h4>
+	</div>
+
+	<div class="w3-container w3-theme-l1">
+		<p>Powered by <a href="#" target="_blank">vbextreme</a></p>
+	</div>
+</footer>
+
+<!-- END MAIN -->
+</div>
+
+<script>
+// Get the Sidebar
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+    overlayBg.style.display = "none";
+  } else {
+    mySidebar.style.display = 'block';
+    overlayBg.style.display = "block";
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+  mySidebar.style.display = "none";
+  overlayBg.style.display = "none";
+}
+</script>
+
+</body>
+</html>
+
