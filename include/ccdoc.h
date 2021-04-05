@@ -135,6 +135,7 @@ const char* ccparse_def(ccdef_s* def, substr_s* comment);
 
 ccdoc_s* ccdoc_new(void);
 void ccdoc_load(ccdoc_s* ccdoc, const char* file);
+void ccdoc_copy_css(const char* destdir, const char* srcdir);
 void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);

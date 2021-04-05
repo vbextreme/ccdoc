@@ -120,6 +120,23 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 	}while( *code );
 }
 
+void ccdoc_copy_css(const char* destdir, const char* srcdir){
+	__dir_close dir_s* src = dir_open(srcdir);
+	if( !src ) die("wrong dir '%s':%s", srcdir, str_errno());
+	dir_foreach(src, file){
+		if( dirent_currentback(file) ) continue;
+		const char* ext = str_find(dirent_name(file), ".css");
+		if( !*ext ) continue;
+		if( ext[str_len(".css")] ) continue; 
+		__mem_free char* destfile = ds_printf("%s/%s", destdir, dirent_name(file));
+		__mem_free char* srcfile = ds_printf("%s/%s", srcdir, dirent_name(file));
+		__fd_close int fds = fd_open(srcfile, "r", 0);
+		__fd_close int fdd = fd_open(destfile, "w", 0);
+		if( fds < 0 || fdd < 0 ) continue;
+		fd_copy(fdd, fds);
+	}
+}
+
 void ccdoc_dump(ccdoc_s* ccdoc){
 	vector_foreach(ccdoc->vfiles, i){
 		printf("<%.*s>%.*s\n", 

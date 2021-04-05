@@ -5,6 +5,7 @@ typedef enum{
 	A_DUMP,
 	A_HTML,
 	A_DESTDIR,
+	A_CSS,
 	A_TEMPLATE,
 	A_HELP
 }a_e;
@@ -13,6 +14,7 @@ __private argdef_s args[] = {
 	{0, 'd', "dump",    ARGDEF_NOARG, NULL, "dump doc"},
 	{0, 'H', "html",    ARGDEF_NOARG, NULL, "build html doc"},
 	{0, 'D', "destdir", ARGDEF_STR  , NULL, "destdir, default " CCDOC_DEF_DESTDIR},
+	{0, 'c', "css",     ARGDEF_STR  , NULL, "copy all .css from dir"},
 	{0, 't', "template",ARGDEF_STR  , NULL, "template filename, default " CCDOC_DEF_TEMPLATE},
 	{0, 'h', "help",    ARGDEF_NOARG, NULL, "show this"},
 	{0,  0 , NULL,      ARGDEF_NOARG, NULL, NULL},
@@ -56,7 +58,7 @@ int main(int argc, char** argv){
 
 	if( opt_enabled(args, A_DUMP) ) ccdoc_dump(ccdoc);
 	if( opt_enabled(args, A_HTML) ) ccdoc_build_html(ccdoc, ftemplate, destdir);
-
+	if( opt_enabled(args, A_CSS ) ) ccdoc_copy_css(destdir, opt_arg_str(args, A_CSS)); 
 	return 0;
 }
 
