@@ -15,7 +15,7 @@ $ ninja
 ### Test
 ```
 $ mkdir ../doc
-$ ./ccdoc -d -H -t ../template/template.html -D ../doc ../test/ccdoc.h ../test/extra.h
+$ ./ccdoc -d -H -t -c ../template ../template/template.html -D ../doc ../test/ccdoc.h ../test/extra.h
 ```
 
 ### Template
