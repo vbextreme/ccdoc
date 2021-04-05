@@ -351,16 +351,16 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 
 	if( *retd ){
 		__mem_free char* r = ds_dup(html->tdef[I_RETURN].begin, substr_len(&html->tdef[I_RETURN]));
+		dbg_info("template:%s",r);
 		if( ret && ret->type.begin ){
 			ds_replace(&r, S_TYPE, ret->type.begin, substr_len(&ret->type));
 		}
 		else{
 			ds_replace(&r, S_TYPE, NULL, 0);
-		}	
+		}
 		ds_replace(&r, S_DESC, retd, ds_len(retd));
-		ds_cat(&desc, html->tdef[I_ARGS_BEGIN].begin, substr_len(&html->tdef[I_ARGS_BEGIN]));
 		ds_cat(&desc, r, ds_len(r));
-		ds_cat(&desc, html->tdef[I_ARGS_END].begin, substr_len(&html->tdef[I_ARGS_END]));
+		dbg_info("retd:%s", retd);
 	}
 
 	dbg_error("CONTENT::%s", desc);
