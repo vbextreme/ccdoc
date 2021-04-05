@@ -407,7 +407,6 @@ __private char* html_section_c(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s* file
 		ds_cat(&desc, d, ds_len(d));
 		__mem_free char* code = html_code(html, &file->vdefs[i].def.code);
 		ds_cat(&desc, code, ds_len(code));
-		ds_cat(&desc, "<hr>", 0);
 	}
 	if( !count ){
 		ds_clear(sec);
