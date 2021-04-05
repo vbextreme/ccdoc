@@ -131,7 +131,7 @@ void ccdoc_copy_css(const char* destdir, const char* srcdir){
 		__mem_free char* destfile = ds_printf("%s/%s", destdir, dirent_name(file));
 		__mem_free char* srcfile = ds_printf("%s/%s", srcdir, dirent_name(file));
 		__fd_close int fds = fd_open(srcfile, "r", 0);
-		__fd_close int fdd = fd_open(destfile, "w", 0);
+		__fd_close int fdd = fd_open(destfile, "w", CCDOC_FILE_PRIV);
 		if( fds < 0 || fdd < 0 ) continue;
 		fd_copy(fdd, fds);
 	}
