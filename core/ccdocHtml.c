@@ -168,6 +168,8 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 	}
 	ds_cat(&desc, html->tdef[I_TEXT_BEGIN].begin, substr_len(&html->tdef[I_TEXT_BEGIN]));
 
+	dbg_info("desc parse:%.*s", substr_format(rawdesc));
+
 
 	__mem_free char** vargd = vector_new(char*, vargs && vector_count(vargs)?vector_count(vargs):1);
 

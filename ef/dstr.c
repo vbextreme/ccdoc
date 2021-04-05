@@ -123,7 +123,7 @@ void ds_cat(char** dst, const char* str, size_t len){
 
 void ds_del(char** dst, size_t at, size_t len){
 	const size_t dslen = ds_len(*dst);
-	if( at > dslen ) die("buffer overflow");
+	if( at > dslen ) die("buffer overflow, len:%lu at:%lu", len, at);
 	iassert(len);
 	if( at + len >= dslen ){
 		(*dst)[at] = 0;
@@ -145,11 +145,13 @@ void ds_replace(char** dst, const char* where, const char* replace, size_t lenR)
 	else if( !lenR ) lenR = str_len(replace);
 	const char* w = *dst;
    	while( *(w = str_find(w, where)) ){
-		ds_del(dst, w - *dst, lenW);
+		size_t at = w-*dst;
+		ds_del(dst, at, lenW);
 		if( lenR ){
-			ds_ins(dst, w - *dst, replace, lenR);
-			w += lenR;
+			ds_ins(dst, at, replace, lenR);
+			at += lenR;
 		}
+		w = &(*dst)[at];
 	}
 	//dbg_info("out '%s'", *dst);
 }
