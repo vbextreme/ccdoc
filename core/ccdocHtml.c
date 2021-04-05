@@ -32,16 +32,17 @@
 
 #define _UNDUCUMENTED "unducumented"
 
-#define S_LINK     "&&LINK&&"
-#define S_NAME     "&&NAME&&"
-#define S_TYPE     "&&TYPE&&"
-#define S_DESC     "&&DESC&&"
-#define S_CONTENT  "&&CONTENT&&"
-#define S_TITLEID  "&&TITLEID&&"
-#define S_NAVBAR   "<!-- visual top -->"
-#define S_SIDEBAR  "<!-- visual side -->"
-#define S_PCONTENT "<!-- content -->"
-#define S_END     "-->"
+#define S_HTML_TITLE "&&HTML_TITLE&&"
+#define S_LINK       "&&LINK&&"
+#define S_NAME       "&&NAME&&"
+#define S_TYPE       "&&TYPE&&"
+#define S_DESC       "&&DESC&&"
+#define S_CONTENT    "&&CONTENT&&"
+#define S_TITLEID    "&&TITLEID&&"
+#define S_NAVBAR     "<!-- visual top -->"
+#define S_SIDEBAR    "<!-- visual side -->"
+#define S_PCONTENT   "<!-- content -->"
+#define S_END        "-->"
 
 #define XENTRY(NAME,STR) I ## NAME
 typedef enum{
@@ -476,6 +477,7 @@ void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* dest
 		}
 
 		ds_replace(&page, S_PCONTENT, content, ds_len(content));
+		ds_replace(&page, S_HTML_TITLE, ccdoc->vfiles[i].name.begin, substr_len(&ccdoc->vfiles[i].name));
 
 		dbg_info("save");
 		__mem_free char* fdest = ds_printf("%s/%.*s%s",destdir, substr_format(&ccdoc->vfiles[i].name), CCDOC_HTML_EXT);
