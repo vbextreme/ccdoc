@@ -18,6 +18,7 @@
 	XENTRY(_CODE_END,      "<!--content.code.end"),\
 	XENTRY(_LINK,          "<!--content.link"),\
 	XENTRY(_RETURN,        "<!--content.return"),\
+	XENTRY(_SUBS,          "<!--section.subsection"),\
 	XENTRY(_MACRO_T,       "<!--section.macro.title"),\
 	XENTRY(_MACRO_D,       "<!--section.macro.desc"),\
 	XENTRY(_ENUM_T,        "<!--section.enum.title"),\
@@ -407,6 +408,7 @@ __private char* html_section_c(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s* file
 		ds_cat(&desc, d, ds_len(d));
 		__mem_free char* code = html_code(html, &file->vdefs[i].def.code);
 		ds_cat(&desc, code, ds_len(code));
+		ds_cat(&desc, html->tdef[I_SUBS].begin, substr_len(&html->tdef[I_SUBS]));
 	}
 	if( !count ){
 		ds_clear(sec);
