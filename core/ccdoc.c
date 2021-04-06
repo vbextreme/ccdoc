@@ -137,6 +137,66 @@ void ccdoc_copy_css(const char* destdir, const char* srcdir){
 	}
 }
 
+void ccdoc_parse_ret(const char** parse, substr_s* desc){
+	*parse = str_skip_hn(*parse);
+	*parse = ccparse_string(desc, *parse);
+	if( !**parse ) die("wrong return command desc"); 
+	*parse = ccparse_skip_hn(*parse);
+}
+
+void ccdoc_parse_arg(const char** pparse, int* argid, substr_s* desc){
+	const char* parse = *pparse;
+	*argid = strtol(parse, (char**)&parse, 10);
+	if( !parse || !*parse ) die("wrong arg command desc");
+	parse = ccparse_string(desc, str_skip_hn(parse));
+	*pparse = ccparse_skip_hn(parse);
+}
+
+void ccdoc_parse_title(const char** pparse, int* id, substr_s* title){
+	const char* parse = *pparse;
+	*id = strtol(parse, (char**)&parse, 10);
+	if( !parse || !*parse ) die("wrong arg command title");
+	parse = ccparse_string(title, str_skip_hn(parse));
+	*pparse = ccparse_skip_hn(parse);
+}
+
+int ccdoc_parse_cmdarg(const char** pparse, char* argsh, substr_s* argln, int* argrq, substr_s* desc){
+	const char* parse = *pparse;
+	parse = ccparse_skip_hn(parse);
+	if( *parse != '|' ) return 0;
+	parse = ccparse_skip_hn(parse+1);
+	*argsh = *parse;
+	parse = ccparse_string(argln, ccparse_skip_hn(parse+1));
+	*argrq = strtol(ccparse_skip_hn(parse), (char**)&parse, 10);
+	if( !*parse || (*parse != ' ' && *parse != '\'' && *parse != '\t' && *parse != '\n') ) die("wrong cli command arg");
+	*pparse = ccparse_string(desc, ccparse_skip_hn(parse+1));
+	*pparse = ccparse_skip_hn(*pparse);
+	return 1;
+}
+
+ref_s* ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse){
+	const char* parse = *pparse;
+	substr_s refname;
+	if( *parse == '\'' ){
+		parse = ccparse_string(&refname, parse);
+	}
+	else{
+		refname.begin = parse;
+		parse = str_anyof(parse, " \t\n");
+		if( !*parse ) die("wrong ref command");
+		refname.end = parse;
+	}
+	//parse = ccparse_skip_hn(parse);
+	ref_s* ref = rbhash_find(ccdoc->refs, refname.begin, substr_len(&refname));
+	if( !ref ) die("ref '%.*s' not exists", substr_format(&refname));
+	while( ref->type == REF_REF ){
+		ref = rbhash_find(ccdoc->refs, ref->value.begin, substr_len(&ref->value));
+		if( !ref ) die("ref %.*s not exists", substr_format(&refname));
+	}
+	*pparse = parse;
+	return ref;
+}
+
 void ccdoc_dump(ccdoc_s* ccdoc){
 	vector_foreach(ccdoc->vfiles, i){
 		printf("<%.*s>%.*s\n", 

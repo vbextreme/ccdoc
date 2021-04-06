@@ -12,6 +12,9 @@
 	XENTRY(_TITLE_END,     "<!--content.title.end"),\
 	XENTRY(_TEXT_BEGIN,    "<!--content.text.begin"),\
 	XENTRY(_TEXT_END,      "<!--content.text.end"),\
+	XENTRY(_CMDARGS_BEGIN, "<!--content.cmdargs.begin"),\
+	XENTRY(_CMDARGS_END,   "<!--content.cmdargs.end"),\
+	XENTRY(_CMDARGS,       "<!--content.cmdargs.content"),\
 	XENTRY(_ARGS_BEGIN,    "<!--content.args.begin"),\
 	XENTRY(_ARGS_END,      "<!--content.args.end"),\
 	XENTRY(_ARG,           "<!--content.args.content"),\
@@ -39,6 +42,9 @@
 #define S_LINK       "&&LINK&&"
 #define S_NAME       "&&NAME&&"
 #define S_TYPE       "&&TYPE&&"
+#define S_SHORT      "&&SHORT&&"
+#define S_LONG       "&&LONG&&"
+#define S_REQUIRED   "&&REQUIRED&&"
 #define S_DESC       "&&DESC&&"
 #define S_CONTENT    "&&CONTENT&&"
 #define S_TITLEID    "&&TITLEID&&"
@@ -210,6 +216,16 @@ __private char* link_element(ccdocHTML_s* html, substr_s* href, substr_s* name){
 	return link;
 }
 
+__private char* cmdarg_element(ccdocHTML_s* html, char argsh, substr_s* argln, int argrq, substr_s* argdesc){
+	const char* yn = argrq ? "yes" : "no";
+	char* ca = ds_dup(html->tdef[I_CMDARGS].begin, substr_len(&html->tdef[I_CMDARGS]));
+	ds_replace(&ca, S_SHORT, &argsh, 1);
+	ds_replace(&ca, S_LONG, argln->begin, substr_len(argln));
+	ds_replace(&ca, S_REQUIRED, yn, str_len(yn));
+	ds_replace(&ca, S_DESC, argdesc->begin, substr_len(argdesc));
+	return ca;
+}
+
 __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const char* title, size_t lenT, substr_s* rawdesc, celement_s* ret, celement_s* vargs){
 	char* desc = ds_new(CCDOC_STRING_SIZE);
 	if( title ){
@@ -258,35 +274,31 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 			switch( *parse ){
 				case CCDOC_DC_RET:{
 					dbg_info("DC_RET");
+					++parse;
 					substr_s retdesc;
-					parse = str_skip_hn(parse+1);
-					parse = ccparse_string(&retdesc, parse);
-					if( !*parse || parse > rawdesc->end ) die("wrong return command desc"); 
+					ccdoc_parse_ret(&parse, &retdesc);
 					ds_cat(&retd, retdesc.begin, substr_len(&retdesc));
-					parse = ccparse_skip_hn(parse);
 					break;
 				}
 
 				case CCDOC_DC_ARG:{
 					dbg_info("DC_ARG");
+					++parse;
 					substr_s argdesc;
-					long argid = strtol(parse+1, (char**)&parse, 10);
-					if( !parse || parse > rawdesc->end ) die("wrong arg command desc");
-					parse = ccparse_string(&argdesc, str_skip_hn(parse));
+					int argid;
+					ccdoc_parse_arg(&parse, &argid, &argdesc); 
 					if( !vargs ) die("cparse fail reading args");
 					if( argid >= (ssize_t)vector_count(vargd) ) die("argument not exists");
 					ds_cat(&vargd[argid], argdesc.begin, substr_len(&argdesc));
-					parse = ccparse_skip_hn(parse);
-					//dbg_error("DC_ARG %ld \"%.*s\" <%s>", argid, substr_format(&argdesc), vargd[argid]);
 					break;
 				}
 
 				case CCDOC_DC_TITLE:{
 					dbg_info("DC_TITLE");
-					long titleid = strtol(parse+1, (char**)&parse, 10);
+					++parse;
+					int titleid;
 					substr_s t;
-					if( !parse || parse > rawdesc->end ) die("wrong arg command desc");
-					parse = ccparse_string(&t, str_skip_hn(parse));
+					ccdoc_parse_title(&parse, &titleid, &t);
 					__mem_free char* titlee = title_element(html, titleid, &t, &t);
 					ds_cat(&desc, html->tdef[I_TEXT_END].begin, substr_len(&html->tdef[I_TEXT_END]));
 					ds_cat(&desc, titlee, ds_len(titlee));
@@ -302,27 +314,28 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					ds_cat(&desc, html->tdef[I_CODE_BEGIN].begin, substr_len(&html->tdef[I_CODE_BEGIN]));
 					break;
 				}
-			
+				
+				case CCDOC_DC_CMDARG:{
+					dbg_info("DC_CODE_COMMAND_ARG");
+					char argsh;
+					substr_s argln;
+					int argrq;
+					substr_s argdesc;
+					ds_cat(&desc, html->tdef[I_CMDARGS_BEGIN].begin, substr_len(&html->tdef[I_CMDARGS_BEGIN]));
+					int cont;
+					do{
+						cont = ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc);
+						__mem_free char* cmda = cmdarg_element(html, argsh, &argln, argrq, &argdesc);
+						ds_cat(&desc, cmda, ds_len(cmda));
+					}while( cont );
+					ds_cat(&desc, html->tdef[I_CMDARGS_END].begin, substr_len(&html->tdef[I_CMDARGS_END]));
+					break;
+				}
+
 				case CCDOC_DC_REF:{
 					dbg_info("DC_REF");
 					++parse;
-					substr_s refname;
-					if( *parse == '\'' ){
-						parse = ccparse_string(&refname, parse);
-					}
-					else{
-						refname.begin = parse;
-						parse = str_anyof(parse, " \t\n");
-						if( !*parse || parse > rawdesc->end ) die("wrong ref command");
-						refname.end = parse;
-					}
-					parse = ccparse_skip_hn(parse);
-					ref_s* ref = rbhash_find(ccdoc->refs, refname.begin, substr_len(&refname));
-					if( !ref ) die("ref '%.*s' not exists", substr_format(&refname));
-					while( ref->type == REF_REF ){
-						ref = rbhash_find(ccdoc->refs, ref->value.begin, substr_len(&ref->value));
-						if( !ref ) die("ref %.*s not exists", substr_format(&refname));
-					}
+					ref_s* ref = ccdoc_parse_ref(ccdoc, &parse);
 					switch( ref->type ){
 						case REF_FILE:{
 							ccfile_s* f = ref->data;

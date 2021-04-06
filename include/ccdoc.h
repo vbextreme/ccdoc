@@ -13,6 +13,9 @@
 /*-alias 'name' 'alias'*/
 /*-str 'name' 'value'*/
 /*- doc
+ * @| <shortch> 'long arg' <1/0 required arg> 'descript'
+ * | ...
+ * | ...
  * @< 'return'
  * @>1 'argument'
  * @*name replace with link to *name
@@ -42,6 +45,7 @@
 #define CCDOC_DC_TITLE     '^'
 #define CCDOC_DC_CODE_B    '{'
 #define CCDOC_DC_CODE_E    '}'
+#define CCDOC_DC_CMDARG    '|'       
 #define CCDOC_DC_ESCAPE    '\\'
 
 #define CCDOC_SECTION_HID    1
@@ -137,6 +141,11 @@ const char* ccparse_def(ccdef_s* def, substr_s* comment);
 ccdoc_s* ccdoc_new(void);
 void ccdoc_load(ccdoc_s* ccdoc, const char* file);
 void ccdoc_copy_css(const char* destdir, const char* srcdir);
+void ccdoc_parse_ret(const char** parse, substr_s* desc);
+void ccdoc_parse_arg(const char** pparse, int* argid, substr_s* desc);
+void ccdoc_parse_title(const char** pparse, int* id, substr_s* title);
+int ccdoc_parse_cmdarg(const char** parse, char* argsh, substr_s* argln, int* argrq, substr_s* desc);
+ref_s* ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse);
 void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);

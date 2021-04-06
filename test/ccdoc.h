@@ -1,11 +1,11 @@
 #ifndef __CCDOC_H__
 #define __CCDOC_H__
 
-/*-str 'test' 'string for test'*/
+/*-str 'test' '"string for test"'*/
 
 /*-file 'ccdoc' comment C documentations 
- * test title @^4 'subtitle' ok @*test \n
- * test link @*extra
+ * title @^4 'subtitle' ok, prova stringa @*test continue\n
+ * prova link @*extra
  * */
 
 /*-visual index*/
