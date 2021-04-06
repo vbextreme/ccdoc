@@ -13,7 +13,7 @@
 	html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 	.w3-sidebar {
 		z-index: 3;
-		width: 250px;
+		width: 15%;
 		top: 43px;
 		bottom: 0;
 		height: inherit;
@@ -39,11 +39,17 @@
 </div>
 
 <!-- Sidebar -->
-<nav class="w3-sidebar w3-bar-block w3-large w3-theme-l3 w3-animate-left" id="mySidebar">
+<nav class="w3-sidebar w3-bar-block w3-small w3-theme-l3" id="mySidebar">
 	<a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu"><i class="fa fa-remove"></i></a>
-<!--sidebar.node
-<a class="w3-bar-item w3-button w3-hover-black" href="&&LINK&&">&&NAME&&</a>
+
+<!--sidebar.group
+<div class="w3-container w3-dark-grey">&&NAME&&</div>
 -->
+
+<!--sidebar.node
+<a class="w3-bar-item w3-button" href="&&LINK&&">&&NAME&&</a>
+-->
+
 	<!-- visual side -->
 </nav>
 
@@ -51,7 +57,7 @@
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
-<div id="mainContent" class="w3-main" style="margin-left:250px">
+<div id="mainContent" class="w3-main" style="margin-left:15%">
 
 <!--content.section
 <div class="w3-row w3-padding-64 w3-bottombar w3-theme-l5">
@@ -72,7 +78,7 @@
 -->
 
 <!--content.title.begin
-<h&&TITLEID&& class="w3-text-blue-grey">
+<h&&TITLEID&& id="&&ID&&" class="w3-text-blue-grey">
 -->
 <!--content.title.end
 </h&&TITLEID&&>
@@ -130,6 +136,10 @@
 		</pre>
 	</div>
 </div>
+-->
+
+<!--section.files.title
+FILES
 -->
 
 <!--section.macro.title
@@ -201,7 +211,7 @@ function w3_open() {
 		overlayBg.style.display = "none";
 	}
 	else{
-		mainContent.style.marginLeft = "250px";
+		mainContent.style.marginLeft = "15%";
 		mySidebar.style.display = 'block';
 		overlayBg.style.display = "block";
 	}

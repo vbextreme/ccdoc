@@ -3,6 +3,7 @@
 #define X_TEMPLATE_TABLE() \
 	XENTRY(_NAVBAR_NODE,   "<!--navbar.node"),\
 	XENTRY(_NAVBAR_CURR,   "<!--navbar.current"),\
+	XENTRY(_SIDEBAR_GROUP, "<!--sidebar.group"),\
 	XENTRY(_SIDEBAR_NODE,  "<!--sidebar.node"),\
 	XENTRY(_SECTION,       "<!--content.section"),\
 	XENTRY(_SECTION_MAIN,  "<!--content.section.main"),\
@@ -19,6 +20,7 @@
 	XENTRY(_LINK,          "<!--content.link"),\
 	XENTRY(_RETURN,        "<!--content.return"),\
 	XENTRY(_SUBS,          "<!--section.subsection"),\
+	XENTRY(_FILES_T,       "<!--section.files.title"),\
 	XENTRY(_MACRO_T,       "<!--section.macro.title"),\
 	XENTRY(_MACRO_D,       "<!--section.macro.desc"),\
 	XENTRY(_ENUM_T,        "<!--section.enum.title"),\
@@ -40,6 +42,7 @@
 #define S_DESC       "&&DESC&&"
 #define S_CONTENT    "&&CONTENT&&"
 #define S_TITLEID    "&&TITLEID&&"
+#define S_ID         "&&ID&&"
 #define S_NAVBAR     "<!-- visual top -->"
 #define S_SIDEBAR    "<!-- visual side -->"
 #define S_PCONTENT   "<!-- content -->"
@@ -97,11 +100,17 @@ __private void html_load_template(ccdoc_s* ccdoc, ccdocHTML_s* html, const char*
 	}
 }
 
-__private char* bar_element(substr_s* template, substr_s* name, substr_s* link){
+__private char* bar_element(substr_s* template, substr_s* name, substr_s* link, int file){
 	char* ele = ds_dup(template->begin, substr_len(template));
-	__mem_free char* lk = ds_dup(link->begin, substr_len(link));
-	ds_cat(&lk, CCDOC_HTML_EXT, str_len(CCDOC_HTML_EXT));
-	ds_replace(&ele, S_LINK, lk, ds_len(lk));
+	if( file ){
+		__mem_free char* lk = ds_dup(link->begin, substr_len(link));
+		ds_cat(&lk, CCDOC_HTML_EXT, str_len(CCDOC_HTML_EXT));
+		ds_replace(&ele, S_LINK, lk, ds_len(lk));
+	}
+	else{
+		__mem_free char* lk = ds_printf("#%.*s", substr_format(link));
+		ds_replace(&ele, S_LINK, lk, ds_len(lk));
+	}
 	ds_replace(&ele, S_NAME, name->begin, substr_len(name));
 	return ele;
 }
@@ -112,7 +121,7 @@ __private char* html_navbar_elements(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s
 	vector_foreach(ccdoc->vfiles, i){
 		if( ccdoc->vfiles[i].visual == VISUAL_INDEX ){
 			substr_s* node = &ccdoc->vfiles[i] == current ? &html->tdef[I_NAVBAR_CURR] : &html->tdef[I_NAVBAR_NODE];
-			__mem_free char* element = bar_element(node, &ccdoc->vfiles[i].name, &ccdoc->vfiles[i].name);
+			__mem_free char* element = bar_element(node, &ccdoc->vfiles[i].name, &ccdoc->vfiles[i].name, 1);
 			ds_cat(&nav, element, ds_len(element));
 			break;
 		}
@@ -121,7 +130,7 @@ __private char* html_navbar_elements(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s
 	vector_foreach(ccdoc->vfiles, i){
 		if( ccdoc->vfiles[i].visual != VISUAL_TOP ) continue;
 		substr_s* node = &ccdoc->vfiles[i] == current ? &html->tdef[I_NAVBAR_CURR] : &html->tdef[I_NAVBAR_NODE];
-		__mem_free char* element = bar_element(node, &ccdoc->vfiles[i].name, &ccdoc->vfiles[i].name);
+		__mem_free char* element = bar_element(node, &ccdoc->vfiles[i].name, &ccdoc->vfiles[i].name, 1);
 		ds_cat(&nav, element, ds_len(element));
 		break;
 	}
@@ -129,26 +138,66 @@ __private char* html_navbar_elements(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s
 	return nav;
 }
 
-__private char* html_sidebar_elements(ccdoc_s* ccdoc, ccdocHTML_s* html){
+__private char* html_sidebar_group(ccdocHTML_s* html, substr_s* gname){
+	char* g = ds_dup(html->tdef[I_SIDEBAR_GROUP].begin, substr_len(&html->tdef[I_SIDEBAR_GROUP]));
+	ds_replace(&g, S_NAME, gname->begin, substr_len(gname));
+	return g;
+}
+
+__private char* html_sidebar_elements(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s* current){
 	char* side = ds_new(CCDOC_STRING_SIZE);
+	size_t cobj[C_COUNT] = {0};
+	substr_s*  href[C_COUNT] = { 
+		[C_NULL] = &html->tdef[I_MACRO_T],
+		[C_MACRO] = &html->tdef[I_MACRO_T],
+		[C_ENUM] = &html->tdef[I_ENUM_T],
+		[C_TYPE] = &html->tdef[I_TYPE_T],
+		[C_STRUCT] = &html->tdef[I_STRUCT_T],
+		[C_FN] = &html->tdef[I_FN_T],
+	};
+	size_t count = 0;
 
 	vector_foreach(ccdoc->vfiles, i){
 		if( ccdoc->vfiles[i].visual != VISUAL_SIDE ) continue;
-		__mem_free char* element = bar_element(&html->tdef[I_SIDEBAR_NODE], &ccdoc->vfiles[i].name, &ccdoc->vfiles[i].name);
-		ds_cat(&side, element, ds_len(element));
-		break;
+		++count;
 	}
 
+	if( count >= 1 ){
+		__mem_free char* gname = html_sidebar_group(html, &html->tdef[I_FILES_T]);
+		ds_cat(&side, gname, ds_len(gname));
+		vector_foreach(ccdoc->vfiles, i){
+			if( ccdoc->vfiles[i].visual != VISUAL_SIDE ) continue;
+			__mem_free char* element = bar_element(&html->tdef[I_SIDEBAR_NODE], &ccdoc->vfiles[i].name, &ccdoc->vfiles[i].name, 1);
+			ds_cat(&side, element, ds_len(element));
+			break;
+		}
+	}
+	
+	vector_foreach(current->vdefs, i){
+		++cobj[current->vdefs[i].def.type];
+	}
+
+	for( size_t i = 0; i < C_COUNT; ++i ){
+		if( !cobj[i] ) continue;
+		__mem_free char* gname = html_sidebar_group(html, href[i]);
+		ds_cat(&side, gname, ds_len(gname));
+		vector_foreach(current->vdefs, j){
+			if( current->vdefs[j].def.type != i ) continue;
+			__mem_free char* element = bar_element(&html->tdef[I_SIDEBAR_NODE], &current->vdefs[j].def.name, &current->vdefs[j].def.name, 0);
+			ds_cat(&side, element, ds_len(element));
+		}
+	}
 	return side;
 }
 
-__private char* title_element(ccdocHTML_s* html, int titleid, substr_s* name){
+__private char* title_element(ccdocHTML_s* html, int titleid, substr_s* name, substr_s* id){
 	char* title = ds_dup(html->tdef[I_TITLE_BEGIN].begin, substr_len(&html->tdef[I_TITLE_BEGIN]));
-	char id[32];
-	size_t lid = sprintf(id, "%d", titleid);
+	char tid[32];
+	size_t lid = sprintf(tid, "%d", titleid);
 	ds_cat(&title, name->begin, substr_len(name));
 	ds_cat(&title, html->tdef[I_TITLE_END].begin, substr_len(&html->tdef[I_TITLE_END]));
-	ds_replace(&title, S_TITLEID, id, lid);
+	ds_replace(&title, S_TITLEID, tid, lid);
+	ds_replace(&title, S_ID, id->begin, substr_len(id));
 	return title;
 }
 
@@ -165,7 +214,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 	char* desc = ds_new(CCDOC_STRING_SIZE);
 	if( title ){
 		substr_s sh1 = { .begin = title, .end = title+lenT };
-		__mem_free char* h1 = title_element(html, tid, &sh1);
+		__mem_free char* h1 = title_element(html, tid, &sh1, &sh1);
 		ds_cat(&desc, h1, ds_len(h1));
 	}
 	ds_cat(&desc, html->tdef[I_TEXT_BEGIN].begin, substr_len(&html->tdef[I_TEXT_BEGIN]));
@@ -238,7 +287,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					substr_s t;
 					if( !parse || parse > rawdesc->end ) die("wrong arg command desc");
 					parse = ccparse_string(&t, str_skip_hn(parse));
-					__mem_free char* titlee = title_element(html, titleid, &t);
+					__mem_free char* titlee = title_element(html, titleid, &t, &t);
 					ds_cat(&desc, html->tdef[I_TEXT_END].begin, substr_len(&html->tdef[I_TEXT_END]));
 					ds_cat(&desc, titlee, ds_len(titlee));
 					ds_cat(&desc, html->tdef[I_TEXT_BEGIN].begin, substr_len(&html->tdef[I_TEXT_BEGIN]));
@@ -426,9 +475,6 @@ void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* dest
 	dbg_info("load template");
 	html_load_template(ccdoc, &html, htmlTemplate);
 	
-	dbg_info("load sidebar");
-	__mem_free char* side = html_sidebar_elements(ccdoc, &html);
-
 	vector_foreach(ccdoc->vfiles, i){
 		__mem_free char* page = ds_dup(html.template, 0);
 		__mem_free char* content = ds_new(CCDOC_STRING_SIZE);
@@ -438,9 +484,12 @@ void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* dest
 			__mem_free char* elm = html_navbar_elements(ccdoc, &html, &ccdoc->vfiles[i]);
 			ds_replace(&page, S_NAVBAR, elm, ds_len(elm));
 		}
-
-		dbg_info("set sedebar");
-		ds_replace(&page, S_SIDEBAR, side, ds_len(side));
+		
+		{
+			dbg_info("load sidebar");
+			__mem_free char* side = html_sidebar_elements(ccdoc, &html, &ccdoc->vfiles[i]);
+			ds_replace(&page, S_SIDEBAR, side, ds_len(side));
+		}
 		
 		{
 			dbg_info("create section h");

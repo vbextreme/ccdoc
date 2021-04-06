@@ -325,7 +325,7 @@ void* mem_alloc(size_t size, uint16_t aligned, uint16_t extend, uint8_t flags, u
 			realsize = size + preSize;
 			if( flags & MEM_FLAG_MANY ) realsize += size;
 			mem = malloc(realsize);
-			if( !mem ) die("malloc error:%s", str_errno());
+			if( !mem ) die("malloc(%ld) error:%s", realsize, str_errno());
 			break;
 		}
 

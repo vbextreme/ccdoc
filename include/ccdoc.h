@@ -57,7 +57,8 @@ typedef enum{
 	C_TYPE,
 	C_STRUCT,
 	C_ENUM,
-	C_FN
+	C_FN,
+	C_COUNT
 }ctype_e;
 
 typedef struct celement{

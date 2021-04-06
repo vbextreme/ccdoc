@@ -68,7 +68,7 @@ char* ds_printf(const char* format, ...){
 	va_list va1,va2;
 	va_start(va1, format);
 	va_start(va2, format);
-	char* ret = str_vprintf(format, va1, va2);
+	char* ret = ds_vprintf(format, va1, va2);
 	va_end(va1);
 	va_end(va2);
 	return ret;
