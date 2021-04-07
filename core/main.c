@@ -1,6 +1,49 @@
 #include <ccdoc.h>
 #include <ef/optex.h>
 
+/*-str 'CCDOC_DEF_DESTDIR'  './doc'*/
+/*-str 'CCDOC_DEF_TEMPLATE' './template/template.html'*/
+
+/*-file 'ccdoc'
+ * this project was born because doxygen has never impressed me, I have always found it difficult for create html doc, man, readme and wiki.\n
+ * ccdoc only works with C, if you don't use C then you either change language or change software.\n
+ * \n
+ * ccdoc is wip, really not use in production\n
+ * \n
+ * Released under GPL v3\n
+ * \n
+ * @^2 'TODO' write documentation for wrinting documentation
+ * @^2 'How To'
+ * @^3 'Build and Install'
+ * @{
+ * $ meson build
+ * $ cd build
+ * $ ninja
+ * @}
+ * @^3 'Test'
+ * @{
+ * $ mkdir ../doc
+ * $ ./ccdoc -d -H -c ../template -t ../template/template.html -D ../doc ../test/ccdoc.h ../test/extra.h
+ * @}
+ * @^3 'Template' for change html output edit template/template.html file
+ *
+ * @^2 'Usage:'
+ * @| d 'dump'    0 'dump doc'
+ * | H 'html'     0 'build html doc'
+ * | r 'readme'   0 'build README doc'
+ * | D 'destdir'  0 'destdir, default " @*CCDOC_DEF_DESTDIR'
+ * | c 'css'      0 'copy all .css from dir'
+ * | t 'template' 0 'template filename, default @*CCDOC_DEF_TEMPLATE'
+ * | h 'help'     0 'show this'
+ *
+ * @^2 'News'
+ * **0.0**  begin\n
+
+*/
+
+/*-visual index*/
+
+
 typedef enum{
 	A_DUMP,
 	A_HTML,
