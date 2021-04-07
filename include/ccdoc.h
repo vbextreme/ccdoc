@@ -150,4 +150,6 @@ void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);
 
+void ccdoc_build_readme(ccdoc_s* ccdoc, const char* destdir);
+
 #endif
