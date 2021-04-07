@@ -42,10 +42,16 @@ __private const char* VISUALNAME[] = {
 const char* ccparse_skip_hn(const char* code){
 	code = str_skip_h(code);
 	if( *code == _NL ){
-		code = str_skip_h(code+1);
-		if( *code == _NXCOM ) code = str_skip_h(code+1);
+		const char* bg = code+1;
+		code = str_skip_h(bg);
+		if( *code == _NXCOM ){
+			++code;
+			if (*code == ' ' || *code == '\t') ++code;
+		}
+		else{
+			code = bg;
+		}
 	}
-
 	return code;
 }
 
