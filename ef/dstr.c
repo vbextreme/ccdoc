@@ -74,6 +74,30 @@ char* ds_printf(const char* format, ...){
 	return ret;
 }
 
+void ds_svprintf(char** out, size_t at, const char* format, va_list va1, va_list va2){
+	const size_t dslen = ds_len(*out);
+	if( at > dslen ) die("buffer overflow");
+	size_t len = vsnprintf(NULL, 0, format, va1);
+	if( ds_available(*out) < len + 1 ){
+		RESIZE(char, *out, dslen+len+1);
+	}
+
+	if( at < dslen ){	
+		memmove(*out+at+len, *out+at, (dslen+1)-at);
+	}
+	vsprintf(&(*out)[at], format, va2);
+	ds_len_update(*out, dslen + len);
+}
+
+void ds_sprintf(char** out, size_t at, const char* format, ...){
+	va_list va1,va2;
+	va_start(va1, format);
+	va_start(va2, format);
+	ds_svprintf(out, at, format, va1, va2);
+	va_end(va1);
+	va_end(va2);
+}
+
 void ds_chomp(char* dstr){
 	dstr_s* ds = mem_extend_info(dstr);
 	if( ds->len > 0 && dstr[ds->len-1] == '\n' ){

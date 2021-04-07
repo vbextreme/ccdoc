@@ -25,6 +25,7 @@ void str_tolower(char* dst, const char* str);
 void str_tr(char* str, const char* find, const char replace);
 const char* str_chr(const char* str, const char ch);
 const char* str_find(const char* str, const char* need);
+const char* str_nfind(const char* str, const char* need, size_t max);
 const char* str_anyof(const char* str, const char* any);
 //delimit str with \0 and return vector of pointers to each token
 char** str_split(char* str, const char* delimit);

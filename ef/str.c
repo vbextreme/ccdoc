@@ -133,6 +133,18 @@ const char* str_find(const char* str, const char* need){
 	return ret ? ret : &str[strlen(str)];
 }
 
+const char* str_nfind(const char* str, const char* need, size_t max){
+	const char* f = str;
+	size_t len = str_len(need);
+	size_t lr = max;
+	while( (f=memchr(f, *need, max)) ){
+		if( memcmp(f, need, len) ) return f;
+		++f;
+		lr = max - (f-str);
+	}
+	return str+max;	
+}
+
 const char* str_anyof(const char* str, const char* any){
 	const char* ret = strpbrk(str, any);
 	return ret ? ret : &str[strlen(str)];
