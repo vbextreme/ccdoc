@@ -137,7 +137,7 @@ const char* str_nfind(const char* str, const char* need, size_t max){
 	const char* f = str;
 	size_t len = str_len(need);
 	size_t lr = max;
-	while( (f=memchr(f, *need, max)) ){
+	while( (f=memchr(f, *need, lr)) ){
 		if( memcmp(f, need, len) ) return f;
 		++f;
 		lr = max - (f-str);

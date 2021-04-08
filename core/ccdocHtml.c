@@ -226,6 +226,34 @@ __private char* cmdarg_element(ccdocHTML_s* html, char argsh, substr_s* argln, i
 	return ca;
 }
 
+__private void html_push_ref(char** dest, ref_s* ref, void* ctx){
+	ccdocHTML_s* html = ctx;
+
+	switch( ref->type ){
+		case REF_FILE:{
+			ccfile_s* f = ref->data;
+			__mem_free char* lk = link_element(html, &f->name, &f->name);
+			ds_cat(dest, lk, ds_len(lk));
+			break;
+		}
+		
+		case REF_DEF:{
+			ccfile_s* f = ((ccdef_s*)ref->data)->parent;
+			__mem_free char* lk = link_element(html, &f->name, &f->name);
+			ds_cat(dest, lk, ds_len(lk));
+			break;
+		}
+
+		case REF_STR:{	
+			ds_cat(dest, ref->value.begin, substr_len(&ref->value));
+			break;
+		}
+
+		default: case REF_REF: die("wrong ref"); break;
+	}
+
+}
+
 __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const char* title, size_t lenT, substr_s* rawdesc, celement_s* ret, celement_s* vargs){
 	char* desc = ds_new(CCDOC_STRING_SIZE);
 	if( title ){
@@ -235,7 +263,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 	}
 	ds_cat(&desc, html->tdef[I_TEXT_BEGIN].begin, substr_len(&html->tdef[I_TEXT_BEGIN]));
 
-	dbg_info("desc parse:%.*s", substr_format(rawdesc));
+	dbg_error("desc parse:%.*s", substr_format(rawdesc));
 
 
 	__mem_free char** vargd = vector_new(char*, vargs && vector_count(vargs)?vector_count(vargs):1);
@@ -326,39 +354,17 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					do{
 						cont = ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc);
 						__mem_free char* cmda = cmdarg_element(html, argsh, &argln, argrq, &argdesc);
-						ds_cat(&desc, cmda, ds_len(cmda));
+						ccdoc_cat_ref_resolver(&desc, ccdoc, cmda, ds_len(cmda), html_push_ref, html);
 					}while( cont );
 					ds_cat(&desc, html->tdef[I_CMDARGS_END].begin, substr_len(&html->tdef[I_CMDARGS_END]));
 					break;
 				}
 
-				case CCDOC_DC_REF:{
+				case CCDOC_DC_REF:
 					dbg_info("DC_REF");
 					++parse;
-					ref_s* ref = ccdoc_parse_ref(ccdoc, &parse);
-					switch( ref->type ){
-						case REF_FILE:{
-							ccfile_s* f = ref->data;
-							__mem_free char* lk = link_element(html, &f->name, &f->name);
-							ds_cat(&desc, lk, ds_len(lk));
-							break;
-						}
-						case REF_DEF:{
-							ccfile_s* f = ((ccdef_s*)ref->data)->parent;
-							__mem_free char* lk = link_element(html, &f->name, &f->name);
-							ds_cat(&desc, lk, ds_len(lk));
-							break;
-						}
-
-						case REF_STR:{	
-							ds_cat(&desc, ref->value.begin, substr_len(&ref->value));
-							break;
-						}
-
-						default: case REF_REF: die("wrong ref"); break;
-					}
-					break;
-				}
+					ccdoc_parse_ref(ccdoc, &parse, &desc, html_push_ref, html);
+				break;
 
 				default: die("unknown command desc @%c", *parse); break;
 			}
@@ -426,8 +432,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 		dbg_info("retd:%s", retd);
 	}
 
-	dbg_error("CONTENT::%s", desc);
-
+	dbg_info("CONTENT::%s", desc);
 
 	return desc;
 }

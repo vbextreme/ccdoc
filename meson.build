@@ -17,7 +17,7 @@ includeDir = include_directories('include')
 
 src = [ 'ef/str.c', 'ef/utf8.c', 'ef/memory.c', 'ef/math.c', 'ef/list.c', 'ef/vector.c', 'ef/delay.c', 'ef/fd.c', 'ef/file.c', 'ef/path.c', 'ef/dir.c', 'ef/rbhash.c', 'ef/hashalg.c' ]
 src += [ 'ef/optex.c', 'ef/dstr.c' ]
-src += [ 'core/main.c', 'core/cparse.c', 'core/ccparse.c', 'core/ccdoc.c', 'core/ccdocHtml.c' ]
+src += [ 'core/main.c', 'core/cparse.c', 'core/ccparse.c', 'core/ccdoc.c', 'core/ccdocHtml.c', 'core/ccdocREADME.c' ]
 
 ##################
 # compiler flags #

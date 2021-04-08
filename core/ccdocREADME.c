@@ -11,7 +11,7 @@
 
 #define _CMDARG_RQ_Y "yes"
 #define _CMDARG_RQ_N "no"
-
+/*
 __private char* EXTPREVIEW[]={
 	".jpg", ".jpeg",
 	".gif", 
@@ -20,12 +20,7 @@ __private char* EXTPREVIEW[]={
 	"youtube",
 	NULL
 };
-
-__private char* EXTVIDEO[]={
-	"youtube",
-	NULL
-};
-
+*/
 __private void md_nl(char** out){
 	ds_cat(out, "<br />", strlen("<br />"));
 }
@@ -36,6 +31,7 @@ __private void md_title(char** out, int tid, const char* title, size_t len){
 	}
 	ds_push(out, ' ');
 	ds_cat(out, title, len);
+	ds_push(out, '\n');
 }
 
 __private void md_code(char** out, const char* syntax){
@@ -46,6 +42,7 @@ __private void md_code(char** out, const char* syntax){
 	ds_push(out, '\n');
 }
 
+/*
 __private int link_preview(const char* link, size_t len){
 	for( size_t i = 0; EXTPREVIEW[i]; ++i ){
 		if( str_nfind(link, EXTPREVIEW[i], len) < link+len ) return 1;
@@ -59,8 +56,20 @@ __private void md_link(char** out, const char* text, size_t lenText, const char*
 	}
 	ds_sprintf(out, ds_len(*out), "[%.*s](%.*s)", (int)lenText, text, (int)lenLink, link);
 }
+*/
 
-__private const char* parse_cmdarg(char** page, const char* parse){
+__private void md_push_ref(char** page, ref_s* ref, __unused void* ctx){
+	switch( ref->type ){
+		default: case REF_REF: die("wrong ref"); break;
+		case REF_FILE: break;
+		case REF_DEF:  break;
+		case REF_STR:
+			ds_cat(page, ref->value.begin, substr_len(&ref->value));
+		break;
+	}
+}
+
+__private const char* parse_cmdarg(ccdoc_s* ccdoc, char** page, const char* parse){
 	char argsh;
 	substr_s argln;
 	int argrq;
@@ -70,12 +79,13 @@ __private const char* parse_cmdarg(char** page, const char* parse){
 	int cont;
 	do{
 		cont = ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc);
-		ds_sprintf(page, ds_len(*page), "-%c|--%.*s|%s|%.*s\n",
+		ds_sprintf(page, ds_len(*page), "-%c|--%.*s|%s|",
 			argsh,
 			substr_format(&argln),
-			argrq ? _CMDARG_RQ_Y : _CMDARG_RQ_N,
-			substr_format(&argdesc)
+			argrq ? _CMDARG_RQ_Y : _CMDARG_RQ_N
 		);
+		ccdoc_cat_ref_resolver(page, ccdoc, argdesc.begin, substr_len(&argdesc), md_push_ref, NULL);
+		ds_push(page, '\n');
 	}while( cont );
 
 	ds_push(page, '\n');
@@ -87,7 +97,8 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc){
 	const char* parse = desc->begin;
 	while( parse < desc->end ){
 		if( *parse == '\n' ){
-			++parse;
+			parse = ccparse_skip_hn(parse);
+			ds_push(page, '\n');
 			continue;
 		}
 		else if( !incode && parse[0] == '\\' && parse[1] == 'n' ){
@@ -132,32 +143,13 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc){
 				
 				case CCDOC_DC_CMDARG:
 					dbg_info("DC_CODE_COMMAND_ARG");
-					parse = parse_cmdarg(page, parse);
+					parse = parse_cmdarg(ccdoc, page, parse);
 				break;
 				
 				case CCDOC_DC_REF:{
 					dbg_info("DC_REF");
 					++parse;
-					ref_s* ref = ccdoc_parse_ref(ccdoc, &parse);
-					switch( ref->type ){
-						case REF_FILE:{
-							//ccfile_s* f = ref->data;
-							break;
-						}
-						case REF_DEF:{
-							//ccfile_s* f = ((ccdef_s*)ref->data)->parent;
-							//__mem_free char* lk = link_element(html, &f->name, &f->name);
-							//ds_cat(&desc, lk, ds_len(lk));
-							break;
-						}
-
-						case REF_STR:{	
-							ds_cat(page, ref->value.begin, substr_len(&ref->value));
-							break;
-						}
-
-						default: case REF_REF: die("wrong ref"); break;
-					}
+					ccdoc_parse_ref(ccdoc, &parse, page, md_push_ref, NULL);
 					break;
 				}
 
@@ -168,6 +160,7 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc){
 			dbg_info("DC_CODE_E");
 			incode = 0;
 			parse += 2;
+			if( (*page)[ds_len(*page)-1] != '\n' ) ds_push(page, '\n');
 			md_code(page, NULL);
 		}
 		else if( !incode && *parse == CCDOC_DC_ESCAPE ){
@@ -180,7 +173,7 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc){
 				ds_push(page, *parse++);
 			}
 		}
-		else if ( !incode ){
+		else{
 			dbg_info("CHAR:%c", *parse);
 			ds_push(page, *parse++);
 		}

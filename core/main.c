@@ -23,7 +23,7 @@
  * @^3 'Test'
  * @{
  * $ mkdir ../doc
- * $ ./ccdoc -d -H -c ../template -t ../template/template.html -D ../doc ../test/ccdoc.h ../test/extra.h
+ * $ ./ccdoc -d -H -r -c ../template -t ../template/template.html -D ../doc ../test/ccdoc.h ../test/extra.h
  * @}
  * @^3 'Template' for change html output edit template/template.html file
  *
@@ -31,9 +31,9 @@
  * @| d 'dump'    0 'dump doc'
  * | H 'html'     0 'build html doc'
  * | r 'readme'   0 'build README doc'
- * | D 'destdir'  0 'destdir, default " @*CCDOC_DEF_DESTDIR'
+ * | D 'destdir'  1 'destdir, default "@*CCDOC_DEF_DESTDIR"'
  * | c 'css'      0 'copy all .css from dir'
- * | t 'template' 0 'template filename, default @*CCDOC_DEF_TEMPLATE'
+ * | t 'template' 1 'template filename, default "@*CCDOC_DEF_TEMPLATE"'
  * | h 'help'     0 'show this'
  *
  * @^2 'News'

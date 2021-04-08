@@ -174,7 +174,7 @@ int ccdoc_parse_cmdarg(const char** pparse, char* argsh, substr_s* argln, int* a
 	return 1;
 }
 
-ref_s* ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse){
+void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*catref)(char** dst, ref_s* ref, void* ctx), void* ctx){
 	const char* parse = *pparse;
 	substr_s refname;
 	if( *parse == '\'' ){
@@ -182,7 +182,7 @@ ref_s* ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse){
 	}
 	else{
 		refname.begin = parse;
-		parse = str_anyof(parse, " \t\n");
+		parse = str_anyof(parse, " \t\n<@'\"");
 		if( !*parse ) die("wrong ref command");
 		refname.end = parse;
 	}
@@ -194,7 +194,27 @@ ref_s* ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse){
 		if( !ref ) die("ref %.*s not exists", substr_format(&refname));
 	}
 	*pparse = parse;
-	return ref;
+	catref(dest, ref, ctx);
+}
+
+void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx){
+	dbg_error("resolve:%.*s", (int)len, str);
+	size_t i = 0;
+	while( i < len ){
+		if( str[i] == '\\' && str[i+1] == CCDOC_DESC_COMMAND ){
+			ds_push(dest, str[i+1]);
+			i+=2;
+		}
+		else if( str[i] == CCDOC_DESC_COMMAND && str[i+1] == CCDOC_DC_REF ){
+			const char* next = &str[i+2];
+			ccdoc_parse_ref(ccdoc, &next, dest, catref, ctx);
+			i = next - str;
+		}
+		else{
+			ds_push(dest, str[i]);
+			++i;
+		}
+	}
 }
 
 void ccdoc_dump(ccdoc_s* ccdoc){

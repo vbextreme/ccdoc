@@ -145,7 +145,8 @@ void ccdoc_parse_ret(const char** parse, substr_s* desc);
 void ccdoc_parse_arg(const char** pparse, int* argid, substr_s* desc);
 void ccdoc_parse_title(const char** pparse, int* id, substr_s* title);
 int ccdoc_parse_cmdarg(const char** parse, char* argsh, substr_s* argln, int* argrq, substr_s* desc);
-ref_s* ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse);
+void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*catref)(char** dst, ref_s* ref, void* ctx), void* ctx);
+void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx);
 void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);
