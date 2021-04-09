@@ -2,7 +2,7 @@
 
 #define README_MD "README.md"
 
-#define _UNDUCUMENTED "unducumented"
+#define _UNDOCUMENTED "undocumented"
 
 #define _RETURN "##Return:\n"
 
