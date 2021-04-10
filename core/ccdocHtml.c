@@ -36,7 +36,7 @@
 	XENTRY(_FN_D,          "<!--section.fn.desc"),\
 	XENTRY(_COUNT,         NULL)
 
-#define _UNDUCUMENTED "unducumented"
+#define _UNDOCUMENTED "undocumented"
 
 #define S_HTML_TITLE "&&HTML_TITLE&&"
 #define S_LINK       "&&LINK&&"
@@ -410,7 +410,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 				ds_replace(&a, S_DESC, vargd[i], ds_len(vargd[i]));
 			}
 			else{
-				ds_replace(&a, S_DESC, _UNDUCUMENTED, str_len(_UNDUCUMENTED));
+				ds_replace(&a, S_DESC, _UNDOCUMENTED, str_len(_UNDOCUMENTED));
 			}
 			dbg_info("ARG::%s", a);
 			ds_cat(&desc, a, ds_len(a));
