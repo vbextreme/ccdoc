@@ -13,8 +13,8 @@
  * rvalue  format ([*a-zA-Z_][a-zA-Z_0-9]*)\n
  * long    format (number(base 8(01) | base 10(1234) | base 16(0xff)))\n
  * double  format ([0-9].[0-9])\n
- * string  format ([^ \t\\n] | ['"][^'"]['"])\n
- * vector  format (\[ rvalue (, rvalue)* \])\n
+ * string  format ([^ \\t\\n] | ['"][^'"]['"])\n
+ * vector  format (\\[ rvalue (, rvalue)* \\])\n
  * comment format (//.*)\n
  * op      format (= | +=)\n
  * lvalue op rvalue\n

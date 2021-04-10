@@ -1,9 +1,6 @@
 #include <ccdoc.h>
 #include <ef/optex.h>
 
-//TODO check escape
-//TODO cmdarg rewrite two time help
-
 /*-file 'ccdoc'
  * this project was born because doxygen has never impressed me, I have always found it difficult for create html doc, man, readme and wiki.\n
  * ccdoc only works with C, if you don't use C then you either change language or change software.\n

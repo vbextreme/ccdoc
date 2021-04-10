@@ -168,6 +168,10 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc){
 			if( *parse == 'n' ){
 				md_nl(page);
 			}
+			else if( *parse == '\\' ) {
+				ds_push(page, *parse++);
+				ds_push(page, *parse++);
+			}
 			else{
 				ds_push(page, *parse++);
 			}

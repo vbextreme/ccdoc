@@ -373,11 +373,11 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 			parse += 2;
 			ds_cat(&desc, html->tdef[I_CODE_END].begin, substr_len(&html->tdef[I_CODE_END]));
 		}
-		else if( !incode && *parse == CCDOC_DC_ESCAPE ){
+		else if( !incode && *parse == CCDOC_DC_ESCAPE){
 			dbg_info("DC_ESCAPE");
 			++parse;
 			ds_push(&desc, *parse++);
-			ds_push(&desc, *parse++);
+			//ds_push(&desc, *parse++);
 		}
 		else if ( !incode ){
 			dbg_info("CHAR:%c", *parse);
