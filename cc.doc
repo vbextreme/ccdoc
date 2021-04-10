@@ -1,0 +1,10 @@
+destdir_html   = ./doc/html
+destdir_readme = ./doc/md
+template_html  = ./template/template.html
+template_css   = ./template
+src            = [ ./core/main.c, ./ef/config.c ]
+dump
+html
+css
+readme
+ 
