@@ -375,6 +375,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 		}
 		else if( !incode && *parse == CCDOC_DC_ESCAPE ){
 			dbg_info("DC_ESCAPE");
+			++parse;
 			ds_push(&desc, *parse++);
 			ds_push(&desc, *parse++);
 		}
