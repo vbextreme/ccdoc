@@ -22,5 +22,6 @@ void ds_push(char** dst, const char ch);
 void ds_cat(char** dst, const char* str, size_t len);
 void ds_del(char** dst, size_t at, size_t len);
 void ds_replace(char** dst, const char* where, const char* replace, size_t lenR);
+const char* ds_between(char** out, const char* parse);
 
 #endif

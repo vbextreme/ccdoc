@@ -216,13 +216,13 @@ void mem_unlink(void* parent, void* mem){
 }
 
 void mem_reparent(void* parent, void* child){
-	//dbg_info("reparent %p to %p", child, parent);
+	dbg_info("reparent %p to %p", child, parent);
 	iassert(mem_check(child));
 	hmem_s* hm = hmem_get(child);
 	hlink_s* next;
 	while( hm->parents ){
 		next = hm->parents->next;
-		iassert(mem_check(hm->parents->hm));
+		iassert(mem_check(hmem_data(hm->parents->hm)));
 		hmem_s* hp = hm->parents->hm;
 		hlink_remove(&hp->childs, hm);
 		free(hm->parents);

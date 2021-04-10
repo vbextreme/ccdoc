@@ -7,6 +7,7 @@
 #include <ef/vector.h>
 #include <ef/rbhash.h>
 #include <ef/file.h>
+#include <ef/fconfig.h>
 
 /*-title 'title' descript*/
 /*-visual top/side/index*/
@@ -51,9 +52,28 @@
 #define CCDOC_SECTION_HID    1
 #define CCDOC_SUBSECTION_HID 3
 
+#define CCDOC_FC_MAX_VAR_NAME 64
+
 #define CCDOC_HTML_EXT ".html"
+
+#define CCDOC_DEF_CONFIG "./cc.doc"
 #define CCDOC_DEF_DESTDIR "./doc"
-#define CCDOC_DEF_TEMPLATE "./template/template.html"
+#define CCDOC_DEF_DESTDIR_HTML CCDOC_DEF_DESTDIR "/html"
+#define CCDOC_DEF_DESTDIR_README CCDOC_DEF_DESTDIR "/md"
+#define CCDOC_DEF_TEMPLATE "./template"
+#define CCDOC_DEF_TEMPLATE_HTML CCDOC_DEF_TEMPLATE "template.html"
+#define CCODC_DEF_TEMPLATE_CSS  CCDOC_DEF_TEMPLATE
+
+#define CCDOC_CONF_DESTDIR_HTML   "destdir_html"
+#define CCDOC_CONF_DESTDIR_README "destdir_readme"
+#define CCDOC_CONF_TEMPLATE_HTML  "template_html"
+#define CCDOC_CONF_TEMPLATE_CSS   "template_css"
+#define CCDOC_CONF_FILES          "src"
+#define CCDOC_CONF_DUMP           "dump"
+#define CCDOC_CONF_HTML           "html"
+#define CCDOC_CONF_CSS            "css"
+#define CCDOC_CONF_README         "readme"
+
 
 typedef enum{
 	C_NULL,
@@ -111,6 +131,7 @@ typedef struct ccdoc{
 	ccfile_s* fsel;
 	const char** vcode;
 	rbhash_t* refs;
+	fconfig_t* fc;
 }ccdoc_s;
 
 typedef enum{
@@ -138,7 +159,7 @@ void ccparse_sel(substr_s* out, substr_s* comment);
 void ccparse_visual(visual_e* out, substr_s* comment);
 const char* ccparse_def(ccdef_s* def, substr_s* comment);
 
-ccdoc_s* ccdoc_new(void);
+ccdoc_s* ccdoc_new(const char* fpath);
 void ccdoc_load(ccdoc_s* ccdoc, const char* file);
 void ccdoc_copy_css(const char* destdir, const char* srcdir);
 void ccdoc_parse_ret(const char** parse, substr_s* desc);

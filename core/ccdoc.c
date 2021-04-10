@@ -12,11 +12,14 @@ __private const char* ccdoc_code_load(ccdoc_s* ccdoc, const char* file){
 	return code;
 }
 
-ccdoc_s* ccdoc_new(void){
+ccdoc_s* ccdoc_new(const char* fpath){
 	ccdoc_s* ccdoc = NEW(ccdoc_s);
 	mem_link(ccdoc, (ccdoc->vfiles = vector_new(ccfile_s, CCDOC_VFILES)));
 	mem_link(ccdoc, (ccdoc->vcode  = vector_new(const char*, CCDOC_VCODE)));
 	mem_link(ccdoc, (ccdoc->refs = rbhash_new(CCDOC_HASH_BEGIN, CCDOC_HASH_MIN, CCDOC_REF_KEYSIZE, CCDOC_HASH_HASH)));
+	ccdoc->fc = fconfig_load(fpath, CCDOC_FC_MAX_VAR_NAME);
+	mem_link(ccdoc, ccdoc->fc);
+	if( fconfig_error(ccdoc->fc) ) die("%s", fconfig_error(ccdoc->fc));
 	return ccdoc;
 }
 

@@ -120,6 +120,7 @@ void* fd_slurp(size_t* outlen, int fd, size_t chunk, int nullchar){
 		RESIZE(char, buf, next+chunk);
 	}
 	if( nc < 0 ){
+		dbg_error("slurping");
 		mem_free(buf);
 		return NULL;
 	}

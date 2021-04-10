@@ -180,7 +180,20 @@ void ds_replace(char** dst, const char* where, const char* replace, size_t lenR)
 	//dbg_info("out '%s'", *dst);
 }
 
-
+const char* ds_between(char** out, const char* parse){
+	char be = *parse++;
+	while( *parse && *parse != be ){
+		if( parse[0] == '\\' && parse[1] == be ){
+			ds_push(out, be);
+			parse += 2;
+		}
+		else{
+			ds_push(out, *parse++);
+		}
+	}
+	if( *parse ) ++parse;
+	return parse;
+}
 
 
 
