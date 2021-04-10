@@ -167,8 +167,7 @@ __private int fc_rvalue(fconfig_t* fc, fconfigVar_s* var, const char** parse){
 			var->fcstr = ds_new(32);
 			mem_link(var, var->fcstr);
 			p = ds_between(&var->fcstr, p);
-			if( p[-1] != '\'' || p[-1] != '\"' ){
-				dbg_error("string is not quoted");
+			if( p[-1] != '\'' && p[-1] != '\"' ){
 				fc->error = str_printf("unterminated string at line:%d ch:%d\n", fc_linen(fc->beginParse, *parse), fc_chn(fc->beginParse, *parse));
 				mem_link(fc, fc->error);
 				return -1;
