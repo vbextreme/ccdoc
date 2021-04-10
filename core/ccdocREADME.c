@@ -76,9 +76,8 @@ __private const char* parse_cmdarg(ccdoc_s* ccdoc, char** page, const char* pars
 	substr_s argdesc;
 	
 	ds_cat(page, _CMDARG, str_len(_CMDARG));
-	int cont;
-	do{
-		cont = ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc);
+	
+	while( ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc) ){
 		ds_sprintf(page, ds_len(*page), "-%c|--%.*s|%s|",
 			argsh,
 			substr_format(&argln),
@@ -86,7 +85,7 @@ __private const char* parse_cmdarg(ccdoc_s* ccdoc, char** page, const char* pars
 		);
 		ccdoc_cat_ref_resolver(page, ccdoc, argdesc.begin, substr_len(&argdesc), md_push_ref, NULL);
 		ds_push(page, '\n');
-	}while( cont );
+	}
 
 	ds_push(page, '\n');
 	return parse;

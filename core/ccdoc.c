@@ -166,7 +166,10 @@ void ccdoc_parse_title(const char** pparse, int* id, substr_s* title){
 int ccdoc_parse_cmdarg(const char** pparse, char* argsh, substr_s* argln, int* argrq, substr_s* desc){
 	const char* parse = *pparse;
 	parse = ccparse_skip_hn(parse);
-	if( *parse != '|' ) return 0;
+	if( *parse != '|' ){
+		*pparse = parse;
+		return 0;
+	}
 	parse = ccparse_skip_hn(parse+1);
 	*argsh = *parse;
 	parse = ccparse_string(argln, ccparse_skip_hn(parse+1));
@@ -174,6 +177,7 @@ int ccdoc_parse_cmdarg(const char** pparse, char* argsh, substr_s* argln, int* a
 	if( !*parse || (*parse != ' ' && *parse != '\'' && *parse != '\t' && *parse != '\n') ) die("wrong cli command arg");
 	*pparse = ccparse_string(desc, ccparse_skip_hn(parse+1));
 	*pparse = ccparse_skip_hn(*pparse);
+	dbg_info("short:%c long:%.*s rq:%d desc:%.*s", *argsh, substr_format(argln), *argrq, substr_format(desc));
 	return 1;
 }
 
@@ -201,7 +205,7 @@ void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*ca
 }
 
 void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx){
-	dbg_error("resolve:%.*s", (int)len, str);
+	dbg_info("resolve:%.*s", (int)len, str);
 	size_t i = 0;
 	while( i < len ){
 		if( str[i] == '\\' && str[i+1] == CCDOC_DESC_COMMAND ){

@@ -2,6 +2,7 @@
 #include <ef/optex.h>
 
 //TODO check escape
+//TODO cmdarg rewrite two time help
 
 /*-file 'ccdoc'
  * this project was born because doxygen has never impressed me, I have always found it difficult for create html doc, man, readme and wiki.\n
@@ -26,7 +27,7 @@
  * @^3 'Template' for change html output edit template/template.html file
  *
  * @^2 'Usage:'
- * @| c 'config' 1 'chande default config path, default is cc.doc'
+ * @| c 'config' 1 'change default config path, default is cc.doc'
  * | h 'help'     0 'show this'
  *
  * @^3 'configure'

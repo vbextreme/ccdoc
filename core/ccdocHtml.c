@@ -350,12 +350,10 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					int argrq;
 					substr_s argdesc;
 					ds_cat(&desc, html->tdef[I_CMDARGS_BEGIN].begin, substr_len(&html->tdef[I_CMDARGS_BEGIN]));
-					int cont;
-					do{
-						cont = ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc);
+					while( ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc) ){
 						__mem_free char* cmda = cmdarg_element(html, argsh, &argln, argrq, &argdesc);
 						ccdoc_cat_ref_resolver(&desc, ccdoc, cmda, ds_len(cmda), html_push_ref, html);
-					}while( cont );
+					}
 					ds_cat(&desc, html->tdef[I_CMDARGS_END].begin, substr_len(&html->tdef[I_CMDARGS_END]));
 					break;
 				}
