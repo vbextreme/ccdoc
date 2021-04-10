@@ -74,6 +74,7 @@ __private int fc_linen(const char* data, const char* parse){
 	int linen=1;
 	while( *(data=str_chr(data, '\n')) && data < parse ){
 		++linen;
+		++data;
 	}
 	return linen;
 }
