@@ -21,8 +21,7 @@
  * @}
  * @^3 'Test'
  * @{
- * $ mkdir ../doc
- * $ ./ccdoc -d -H -r -c ../template -t ../template/template.html -D ../doc ../test/ccdoc.h ../test/extra.h
+ * TODO
  * @}
  * @^3 'Template' for change html output edit template/template.html file
  *
