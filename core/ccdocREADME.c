@@ -207,13 +207,17 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc){
 	}
 }
 
+char* ccdoc_md_build(ccdoc_s* ccdoc, ccfile_s* ccf){
+	char* page = ds_new(CCDOC_STRING_SIZE);
+	md_title(&page, 1, ccf->name.begin, substr_len(&ccf->name));
+	desc_parse(&page, ccdoc, &ccf->desc);
+	return page;
+}
+
 void ccdoc_build_readme(ccdoc_s* ccdoc, const char* destdir){
 	vector_foreach(ccdoc->vfiles, i){
 		if( ccdoc->vfiles[i].visual != VISUAL_INDEX ) continue;
-		__mem_free char* page = ds_new(CCDOC_STRING_SIZE);
-		ccfile_s* index = &ccdoc->vfiles[i];
-		md_title(&page, 1, index->name.begin, substr_len(&index->name));
-		desc_parse(&page, ccdoc, &index->desc);
+		__mem_free char* page = ccdoc_md_build(ccdoc, &ccdoc->vfiles[i]);
 		dbg_info("save");
 		__mem_free char* fdest = ds_printf("%s/%s",destdir, README_MD);
 		__fd_close int fd = fd_open(fdest, "w", CCDOC_FILE_PRIV);

@@ -68,20 +68,23 @@
 #define CCDOC_DEF_DESTDIR "./doc"
 #define CCDOC_DEF_DESTDIR_HTML CCDOC_DEF_DESTDIR "/html"
 #define CCDOC_DEF_DESTDIR_README CCDOC_DEF_DESTDIR "/md"
+#define CCDOC_DEF_DESTDIR_WIKI CCDOC_DEF_DESTDIR "/wiki"
 #define CCDOC_DEF_TEMPLATE "./template"
 #define CCDOC_DEF_TEMPLATE_HTML CCDOC_DEF_TEMPLATE "template.html"
 #define CCODC_DEF_TEMPLATE_CSS  CCDOC_DEF_TEMPLATE
 
 #define CCDOC_CONF_DESTDIR_HTML   "destdir_html"
 #define CCDOC_CONF_DESTDIR_README "destdir_readme"
+#define CCDOC_CONF_DESTDIR_WIKI   "destdir_wiki"
 #define CCDOC_CONF_TEMPLATE_HTML  "template_html"
 #define CCDOC_CONF_TEMPLATE_CSS   "template_css"
+#define CCDOC_CONF_WIKI_SITE      "wiki_site"
 #define CCDOC_CONF_FILES          "src"
 #define CCDOC_CONF_DUMP           "dump"
 #define CCDOC_CONF_HTML           "html"
 #define CCDOC_CONF_CSS            "css"
 #define CCDOC_CONF_README         "readme"
-
+#define CCDOC_CONF_WIKI           "wiki"
 
 typedef enum{
 	C_NULL,
@@ -182,6 +185,9 @@ void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);
 
+char* ccdoc_md_build(ccdoc_s* ccdoc, ccfile_s* ccf);
 void ccdoc_build_readme(ccdoc_s* ccdoc, const char* destdir);
+
+void ccdoc_build_wiki(ccdoc_s* ccdoc, const char* destdir);
 
 #endif

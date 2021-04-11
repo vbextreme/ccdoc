@@ -107,6 +107,7 @@ int main(int argc, char** argv){
 	
 	conf_set(ccdoc->fc, CCDOC_CONF_DESTDIR_HTML,   str_len(CCDOC_CONF_DESTDIR_HTML),   CCDOC_DEF_DESTDIR_HTML, 1);
 	conf_set(ccdoc->fc, CCDOC_CONF_DESTDIR_README, str_len(CCDOC_CONF_DESTDIR_README), CCDOC_DEF_DESTDIR_README, 1);
+	conf_set(ccdoc->fc, CCDOC_CONF_DESTDIR_WIKI,   str_len(CCDOC_CONF_DESTDIR_WIKI),   CCDOC_DEF_DESTDIR_WIKI, 1);
 	conf_set(ccdoc->fc, CCDOC_CONF_TEMPLATE_HTML,  str_len(CCDOC_CONF_TEMPLATE_HTML),  CCDOC_DEF_TEMPLATE_HTML, 1);
 	conf_set(ccdoc->fc, CCDOC_CONF_TEMPLATE_CSS,   str_len(CCDOC_CONF_TEMPLATE_CSS),   CCODC_DEF_TEMPLATE_CSS, 1);
 	
@@ -141,6 +142,12 @@ int main(int argc, char** argv){
 	if( fconfig_get(ccdoc->fc, CCDOC_CONF_README, str_len(CCDOC_CONF_README)) ){
 		ccdoc_build_readme(ccdoc,
 			fconfig_get(ccdoc->fc, CCDOC_CONF_DESTDIR_README, str_len(CCDOC_CONF_DESTDIR_README))->fcstr
+		);
+	}
+
+	if( fconfig_get(ccdoc->fc, CCDOC_CONF_WIKI, str_len(CCDOC_CONF_WIKI)) ){
+		ccdoc_build_wiki(ccdoc,
+			fconfig_get(ccdoc->fc, CCDOC_CONF_DESTDIR_WIKI, str_len(CCDOC_CONF_DESTDIR_WIKI))->fcstr
 		);
 	}
 
