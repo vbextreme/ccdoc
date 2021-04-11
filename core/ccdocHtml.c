@@ -22,6 +22,12 @@
 	XENTRY(_CODE_END,      "<!--content.code.end"),\
 	XENTRY(_LINK,          "<!--content.link"),\
 	XENTRY(_RETURN,        "<!--content.return"),\
+	XENTRY(_BOLD_BEGIN,    "<!--content.bold.begin"),\
+	XENTRY(_BOLD_END,      "<!--content.bold.end"),\
+	XENTRY(_ITALIC_BEGIN,  "<!--content.italic.begin"),\
+	XENTRY(_ITALIC_END,    "<!--content.italic.end"),\
+	XENTRY(_STRIKE_BEGIN,  "<!--content.strike.begin"),\
+	XENTRY(_STRIKE_END,    "<!--content.strike.end"),\
 	XENTRY(_SUBS,          "<!--section.subsection"),\
 	XENTRY(_FILES_T,       "<!--section.files.title"),\
 	XENTRY(_MACRO_T,       "<!--section.macro.title"),\
@@ -216,6 +222,22 @@ __private char* link_element(ccdocHTML_s* html, substr_s* href, substr_s* name){
 	return link;
 }
 
+__private void html_bis(char** dest, ccdocHTML_s* html, substr_s* desc, int type){
+	switch(type){
+		case 0: ds_cat(dest, html->tdef[I_BOLD_BEGIN].begin, substr_len(&html->tdef[I_BOLD_BEGIN])); break;
+		case 1: ds_cat(dest, html->tdef[I_ITALIC_BEGIN].begin, substr_len(&html->tdef[I_ITALIC_BEGIN])); break;
+		case 2: ds_cat(dest, html->tdef[I_STRIKE_BEGIN].begin, substr_len(&html->tdef[I_STRIKE_BEGIN])); break;
+		default: die("unknown text format type"); break;
+	}
+	ds_cat(dest, desc->begin, substr_len(desc));
+	switch(type){
+		case 0: ds_cat(dest, html->tdef[I_BOLD_END].begin, substr_len(&html->tdef[I_BOLD_END])); break;
+		case 1: ds_cat(dest, html->tdef[I_ITALIC_END].begin, substr_len(&html->tdef[I_ITALIC_END])); break;
+		case 2: ds_cat(dest, html->tdef[I_STRIKE_END].begin, substr_len(&html->tdef[I_STRIKE_END])); break;
+		default: die("unknown text format type"); break;
+	}
+}
+
 __private char* cmdarg_element(ccdocHTML_s* html, char argsh, substr_s* argln, int argrq, substr_s* argdesc){
 	const char* yn = argrq ? "yes" : "no";
 	char* ca = ds_dup(html->tdef[I_CMDARGS].begin, substr_len(&html->tdef[I_CMDARGS]));
@@ -355,6 +377,24 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 						ccdoc_cat_ref_resolver(&desc, ccdoc, cmda, ds_len(cmda), html_push_ref, html);
 					}
 					ds_cat(&desc, html->tdef[I_CMDARGS_END].begin, substr_len(&html->tdef[I_CMDARGS_END]));
+					break;
+				}
+				
+				case CCDOC_DC_LINK:{
+					dbg_info("DC_LINK");
+					++parse;
+					substr_s name, link;
+					ccdoc_parse_link(&parse, &name, &link);
+					__mem_free char* lk = link_element(html, &link, &name);	
+					ds_cat(&desc, lk, ds_len(lk));	
+					break;
+				}
+				
+				case CCDOC_DC_BOLD: case CCDOC_DC_ITALIC: case CCDOC_DC_STRIKE:{
+					dbg_info("DC_ATTRIBUTE");
+					substr_s txt;
+					int att = ccdoc_parse_attribute(&parse, &txt);
+					html_bis(&desc, html, &txt, att);
 					break;
 				}
 

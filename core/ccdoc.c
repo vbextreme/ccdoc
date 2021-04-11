@@ -224,6 +224,26 @@ void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t
 	}
 }
 
+void ccdoc_parse_link(const char** parse, substr_s* name, substr_s* link){
+	*parse = ccparse_skip_hn(*parse);
+	*parse = ccparse_string(name, *parse);
+	*parse = ccparse_skip_hn(*parse);
+	*parse = ccparse_string(link, *parse);
+}
+
+int ccdoc_parse_attribute(const char** parse, substr_s* txt){
+	int ret;
+	switch(**parse){
+		case CCDOC_DC_BOLD  : ret = 0; break;
+		case CCDOC_DC_ITALIC: ret = 1; break;
+		case CCDOC_DC_STRIKE: ret = 2; break;
+		default: die("wrong ccdoc attribute");
+	} 
+	*parse = ccparse_skip_hn(*parse + 1);
+	*parse = ccparse_string(txt, *parse);
+	return ret;
+}
+
 void ccdoc_dump(ccdoc_s* ccdoc){
 	vector_foreach(ccdoc->vfiles, i){
 		printf("<%.*s>%.*s\n", 

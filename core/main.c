@@ -44,9 +44,9 @@
  *
  *
  * @^2 'News'
- * **0.2**  change option to config\n
- * **0.1**  build README.md\n
- * **0.0**  begin\n
+ * @b'0.2'  change option to config\n
+ * @b'0.1'  build README.md\n
+ * @b'0.0'  begin\n
  *
 */
 

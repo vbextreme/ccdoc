@@ -11,7 +11,7 @@
 
 #define _CMDARG_RQ_Y "yes"
 #define _CMDARG_RQ_N "no"
-/*
+
 __private char* EXTPREVIEW[]={
 	".jpg", ".jpeg",
 	".gif", 
@@ -20,7 +20,7 @@ __private char* EXTPREVIEW[]={
 	"youtube",
 	NULL
 };
-*/
+
 __private void md_nl(char** out){
 	ds_cat(out, "<br />", strlen("<br />"));
 }
@@ -42,7 +42,6 @@ __private void md_code(char** out, const char* syntax){
 	ds_push(out, '\n');
 }
 
-/*
 __private int link_preview(const char* link, size_t len){
 	for( size_t i = 0; EXTPREVIEW[i]; ++i ){
 		if( str_nfind(link, EXTPREVIEW[i], len) < link+len ) return 1;
@@ -56,7 +55,15 @@ __private void md_link(char** out, const char* text, size_t lenText, const char*
 	}
 	ds_sprintf(out, ds_len(*out), "[%.*s](%.*s)", (int)lenText, text, (int)lenLink, link);
 }
-*/
+
+__private void md_attribute(char** out, int type, substr_s* txt){
+	switch(type){
+		case 0: ds_sprintf(out, ds_len(*out), "**%.*s**", substr_format(txt)); break;
+		case 1: ds_sprintf(out, ds_len(*out), "_%.*s_", substr_format(txt)); break;
+		case 2: ds_sprintf(out, ds_len(*out), "~~%.*s~~", substr_format(txt)); break;
+		default: die("unknown format");
+	}
+}
 
 __private void md_push_ref(char** page, ref_s* ref, __unused void* ctx){
 	switch( ref->type ){
@@ -145,6 +152,23 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc){
 					parse = parse_cmdarg(ccdoc, page, parse);
 				break;
 				
+				case CCDOC_DC_LINK:{
+					dbg_info("DC_LINK");
+					++parse;
+					substr_s name, link;
+					ccdoc_parse_link(&parse, &name, &link);
+					md_link(page, name.begin, substr_len(&name), link.begin, substr_len(&link));
+					break;
+				}
+				
+				case CCDOC_DC_BOLD: case CCDOC_DC_ITALIC: case CCDOC_DC_STRIKE:{
+					dbg_info("DC_ATTRIBUTE");
+					substr_s txt;
+					int att = ccdoc_parse_attribute(&parse, &txt);
+					md_attribute(page, att, &txt);
+					break;
+				}
+
 				case CCDOC_DC_REF:{
 					dbg_info("DC_REF");
 					++parse;

@@ -23,6 +23,10 @@
  * @*'refname' same @*name 
  * @^2 'title' subtitle
  * @{ code start @} code end
+ * @? 'name' 'link'
+ * @b 'bold'
+ * @i 'italic'
+ * @s 'strike'
  * */
 
 #define CCDOC_VFILES 4
@@ -46,7 +50,11 @@
 #define CCDOC_DC_TITLE     '^'
 #define CCDOC_DC_CODE_B    '{'
 #define CCDOC_DC_CODE_E    '}'
-#define CCDOC_DC_CMDARG    '|'       
+#define CCDOC_DC_CMDARG    '|'
+#define CCDOC_DC_LINK      '?'
+#define CCDOC_DC_BOLD      'b'
+#define CCDOC_DC_ITALIC    'i'
+#define CCDOC_DC_STRIKE    's'
 #define CCDOC_DC_ESCAPE    '\\'
 
 #define CCDOC_SECTION_HID    1
@@ -168,6 +176,8 @@ void ccdoc_parse_title(const char** pparse, int* id, substr_s* title);
 int ccdoc_parse_cmdarg(const char** parse, char* argsh, substr_s* argln, int* argrq, substr_s* desc);
 void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*catref)(char** dst, ref_s* ref, void* ctx), void* ctx);
 void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx);
+void ccdoc_parse_link(const char** parse, substr_s* name, substr_s* link);
+int ccdoc_parse_attribute(const char** parse, substr_s* txt);
 void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);
