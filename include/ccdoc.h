@@ -59,7 +59,6 @@
 
 #define CCDOC_SECTION_HID    1
 #define CCDOC_SUBSECTION_HID 3
-
 #define CCDOC_FC_MAX_VAR_NAME 64
 
 #define CCDOC_HTML_EXT ".html"
@@ -181,6 +180,8 @@ void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*ca
 void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx);
 void ccdoc_parse_link(const char** parse, substr_s* name, substr_s* link);
 int ccdoc_parse_attribute(const char** parse, substr_s* txt);
+void ccdoc_parse_skip_arg(const char** parse);
+substr_s* ccdoc_parse_args(substr_s* desc, size_t count);
 void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);

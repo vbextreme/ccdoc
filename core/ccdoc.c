@@ -244,6 +244,38 @@ int ccdoc_parse_attribute(const char** parse, substr_s* txt){
 	return ret;
 }
 
+void ccdoc_parse_skip_arg(const char** parse){
+	++(*parse);
+	strtol(*parse, (char**)parse, 10);
+	if( !parse || !*parse ) die("wrong arg command desc");
+	substr_s tmp;
+	*parse = ccparse_string(&tmp, str_skip_hn(*parse));
+	*parse = ccparse_skip_hn(*parse);
+}
+
+substr_s* ccdoc_parse_args(substr_s* desc, size_t count){
+	substr_s* vsub = vector_new(substr_s, count+1);
+	for( size_t i = 0; i < count; ++i){
+		substr_s null = {.begin = NULL, .end = NULL};
+		vector_push(vsub, null);
+	}
+	const char* parse = desc->begin;
+	while( *parse && parse < desc->end ){
+		if( *parse != CCDOC_DC_ARG ){
+			++parse;
+			continue;
+		}
+		++parse;
+		int argid = strtol(parse, (char**)&parse, 10);
+		if( !parse || !*parse ) die("wrong arg command desc");
+		if( argid >= (int)count ) die("function accept %lu arguments", count);
+		parse = ccparse_string(&vsub[argid], str_skip_hn(parse));
+		parse = ccparse_skip_hn(parse);
+	}
+
+	return vsub;
+}
+
 void ccdoc_dump(ccdoc_s* ccdoc){
 	vector_foreach(ccdoc->vfiles, i){
 		printf("<%.*s>%.*s\n", 

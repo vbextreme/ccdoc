@@ -293,7 +293,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 	if( vargs ){
 		vector_foreach(vargs, i){
 			char* vd = vargs[i].desc.begin ? ds_dup(vargs[i].desc.begin, substr_len(&vargs[i].desc)) : ds_new(CCDOC_STRING_SIZE);
-			dbg_error("INITARGS[%lu]:%s", i, vd);
+			dbg_info("INITARGS[%lu]:%s", i, vd);
 			mem_link(vargd, vd);
 			vector_push(vargd, vd);
 		}

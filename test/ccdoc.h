@@ -3,12 +3,12 @@
 
 /*-str 'test' '"string for test"'*/
 
-/*-file 'ccdoc' comment C documentations 
+/*-file 'testccdoc' comment C documentations 
  * title @^4 'subtitle' ok, prova stringa @*test continue\n
  * prova link @*extra
  * */
 
-/*-visual index*/
+/*-visual side*/
 
 
 /*- simple define*/
