@@ -40,6 +40,7 @@
  * html                                      // if exists build html doc
  * css                                       // if exists copy css
  * readme                                    // if exists build readme
+ * man                                       // if exists build man
  * @}
  *
  *
@@ -108,9 +109,11 @@ int main(int argc, char** argv){
 	conf_set(ccdoc->fc, CCDOC_CONF_DESTDIR_HTML,   str_len(CCDOC_CONF_DESTDIR_HTML),   CCDOC_DEF_DESTDIR_HTML, 1);
 	conf_set(ccdoc->fc, CCDOC_CONF_DESTDIR_README, str_len(CCDOC_CONF_DESTDIR_README), CCDOC_DEF_DESTDIR_README, 1);
 	conf_set(ccdoc->fc, CCDOC_CONF_DESTDIR_WIKI,   str_len(CCDOC_CONF_DESTDIR_WIKI),   CCDOC_DEF_DESTDIR_WIKI, 1);
+	conf_set(ccdoc->fc, CCDOC_CONF_DESTDIR_MAN,    str_len(CCDOC_CONF_DESTDIR_MAN),    CCDOC_DEF_DESTDIR_MAN, 1);
 	conf_set(ccdoc->fc, CCDOC_CONF_TEMPLATE_HTML,  str_len(CCDOC_CONF_TEMPLATE_HTML),  CCDOC_DEF_TEMPLATE_HTML, 1);
 	conf_set(ccdoc->fc, CCDOC_CONF_TEMPLATE_CSS,   str_len(CCDOC_CONF_TEMPLATE_CSS),   CCODC_DEF_TEMPLATE_CSS, 1);
-	
+	conf_set(ccdoc->fc, CCDOC_CONF_MESON,          str_len(CCDOC_CONF_MESON),          CCDOC_DEF_MESON, 1);
+
 	fconfigVar_s* varFiles = fconfig_get(ccdoc->fc, CCDOC_CONF_FILES, str_len(CCDOC_CONF_FILES));
 	if( !varFiles || varFiles->type != FCVAR_VECTOR ) die("no vector src set in %s", conf);
 	
@@ -148,6 +151,12 @@ int main(int argc, char** argv){
 	if( fconfig_get(ccdoc->fc, CCDOC_CONF_WIKI, str_len(CCDOC_CONF_WIKI)) ){
 		ccdoc_build_wiki(ccdoc,
 			fconfig_get(ccdoc->fc, CCDOC_CONF_DESTDIR_WIKI, str_len(CCDOC_CONF_DESTDIR_WIKI))->fcstr
+		);
+	}
+
+	if( fconfig_get(ccdoc->fc, CCDOC_CONF_MAN, str_len(CCDOC_CONF_MAN)) ){
+		ccdoc_build_man(ccdoc,
+			fconfig_get(ccdoc->fc, CCDOC_CONF_DESTDIR_MAN, str_len(CCDOC_CONF_DESTDIR_MAN))->fcstr
 		);
 	}
 

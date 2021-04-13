@@ -1,20 +1,15 @@
 #include <ccdoc.h>
 
-#define README_MD "README.md"
+//TODO test
 
 #define _UNDOCUMENTED "undocumented"
 
-#define _RETURN "\n#### Return:\n"
+#define _RETURN "Return:"
 
 #define _TYPE "Type:"
 
-#define _CMDARG "Short|Long|Required|Descript\n"\
-				"-----|----|--------|--------\n"
-
 #define _CMDARG_RQ_Y "yes"
 #define _CMDARG_RQ_N "no"
-
-#define _UNDOCUMENTED "undocumented"
 
 #define T_MACRO       "Macro"
 #define T_MACRO_DESC  "List of macro"
@@ -27,79 +22,60 @@
 #define T_FN          "Api"
 #define T_FN_DESC     "List of functions"
 
-__private char* EXTPREVIEW[]={
-	".jpg", ".jpeg",
-	".gif", 
-	".png",
-	".bmp",
-	"youtube",
-	NULL
-};
-
-__private void md_nl(char** out){
-	ds_cat(out, "<br />\n", strlen("<br />\n"));
-}
-
-__private void md_line(char** out){
-	ds_cat(out, "\n--------------------------------\n", 0);
-}
-
-__private void md_title(char** out, int tid, const char* title, size_t len){
-	while( tid-->0 ){
-		ds_push(out, '#');
-	}
-	ds_push(out, ' ');
+__private void man_th(char** out, ccdoc_s* ccdoc, const char* title, size_t len, int page){
+	__mem_free char* v = NULL;
+	int p = 0;
+	ds_cat(out, ".TH ", str_len(".TH "));
 	ds_cat(out, title, len);
-	ds_push(out, '\n');
-}
-
-__private void md_code(char** out, const char* syntax){
-	ds_cat(out, "\n```", strlen("\n```"));
-	if( syntax ){
-		ds_cat(out, syntax, str_len(syntax));
+	if( ccdoc_project_info(&v, &p, ccdoc) ){
+		if( page ) ds_sprintf(out, ds_len(*out), " %d\n", page);
+		return;
 	}
-	ds_push(out, '\n');
+
+	page = p == 1 ? 1 : 3;
+	ds_sprintf(out, ds_len(*out), " %d \"%s\"\n", page, v ? v : "");
 }
 
-__private int link_preview(const char* link, size_t len){
-	for( size_t i = 0; EXTPREVIEW[i]; ++i ){
-		if( str_nfind(link, EXTPREVIEW[i], len) < link+len ) return 1;
-	}
-	return 0;
+__private void man_sh(char** out, const char* title, size_t len){
+	ds_sprintf(out, ds_len(*out), ".SH %.*s\n", (int)len, title);
 }
 
-__private char* md_link_escape(const char* str, size_t len){
-	char* ds = ds_dup(str, len);
-	ds_replace(&ds, " ", "%20", 2);
-	return ds;
+__private void man_title(char** out, const char* title, size_t len){
+	ds_sprintf(out, ds_len(*out), "\n.PP\n.B %.*s\n", (int)len, title);
 }
 
-__private void md_link(char** out, const char* text, size_t lenText, const char* link, size_t lenLink){
-	if( link_preview(link, lenLink) ){
-		ds_push(out, '!');
-	}
-	__mem_free char* lk = md_link_escape(link, lenLink);
-	ds_sprintf(out, ds_len(*out), "[%.*s](%s)", (int)lenText, text, lk);
-}
-
-__private void md_attribute(char** out, int type, substr_s* txt){
+__private void man_attribute(char** out, int type, substr_s* txt){
 	switch(type){
-		case 0: ds_sprintf(out, ds_len(*out), "**%.*s**", substr_format(txt)); break;
-		case 1: ds_sprintf(out, ds_len(*out), "_%.*s_", substr_format(txt)); break;
-		case 2: ds_sprintf(out, ds_len(*out), "~~%.*s~~", substr_format(txt)); break;
+		case 0: ds_sprintf(out, ds_len(*out), "\n.B %.*s\n", substr_format(txt)); break;
+		case 1: ds_sprintf(out, ds_len(*out), "\n.I %.*s\n", substr_format(txt)); break;
+		case 2: ds_sprintf(out, ds_len(*out), "%.*s", substr_format(txt)); break;
 		default: die("unknown format");
 	}
 }
 
-__private void md_push_ref(char** page, ref_s* ref, void* ctx){
+__private ccfile_s* get_index(ccdoc_s* ccdoc){
+	vector_foreach(ccdoc->vfiles, i){
+		if( ccdoc->vfiles[i].visual == VISUAL_INDEX ) return &ccdoc->vfiles[i];
+	}
+	die("no index");
+}
+
+__private void man_link(char** page, ccdoc_s* ccdoc,  substr_s* name){
+	ccfile_s* index = get_index(ccdoc);
+	if( !strncmp(index->name.begin, name->begin, substr_len(name)) ){
+		ds_sprintf(page, ds_len(*page), "\n.B %.*s\n", substr_format(name));
+	}
+	else{
+		ds_sprintf(page, ds_len(*page), "\n.B %.*s_%.*s\n", substr_format(&index->name), substr_format(name));
+	}
+}
+
+__private void man_push_ref(char** page, ref_s* ref, void* ctx){
 	switch( ref->type ){
 		default: case REF_REF: die("wrong ref"); break;
 		case REF_FILE:{
-			ccdoc_s* ccdoc = ctx;
-			fconfigVar_s* wikiSite = fconfig_get(ccdoc->fc, CCDOC_CONF_WIKI_SITE, str_len(CCDOC_CONF_WIKI_SITE));
-			if( !wikiSite || wikiSite->type != FCVAR_STR ) die("wrong wiki config");
-			__mem_free char* flink = ds_printf("%s/%.*s.md", wikiSite->fcstr, substr_format(&ref->name));
-			md_link(page, ref->name.begin, substr_len(&ref->name), flink, ds_len(flink));
+			ccfile_s* f = ref->data;
+			man_link(page, ctx, &f->name);
 			break;
 		}
 		
@@ -111,18 +87,17 @@ __private void md_push_ref(char** page, ref_s* ref, void* ctx){
 	}
 }
 
-__private void md_argument(char** page,ccdoc_s* ccdoc, substr_s* type, substr_s* name, substr_s* desc, substr_s* adesc){
+__private void man_argument(char** page,ccdoc_s* ccdoc, substr_s* type, substr_s* name, substr_s* desc, substr_s* adesc){
+	ds_cat(page, ".TP\n", str_len(".TP"));
 	if( type && type->begin ){
-		md_attribute(page, 0, type);
-		ds_push(page, '\t');
+		man_attribute(page, 0, type);
 	}
 	if( name && name->begin ){
-		md_attribute(page, 1, name);
-		ds_push(page, '\t');
+		man_attribute(page, 1, name);
 	}
-	if( desc && desc->begin ) ccdoc_cat_ref_resolver(page, ccdoc, desc->begin, substr_len(desc), md_push_ref, ccdoc);
-	if( adesc && adesc->begin ) ccdoc_cat_ref_resolver(page, ccdoc, adesc->begin, substr_len(adesc), md_push_ref, ccdoc);
-	md_nl(page);
+	if( desc && desc->begin ) ccdoc_cat_ref_resolver(page, ccdoc, desc->begin, substr_len(desc), man_push_ref, ccdoc);
+	if( adesc && adesc->begin ) ccdoc_cat_ref_resolver(page, ccdoc, adesc->begin, substr_len(adesc), man_push_ref, ccdoc);
+	ds_push(page, '\n');
 }
 
 __private const char* parse_cmdarg(ccdoc_s* ccdoc, char** page, const char* parse){
@@ -131,15 +106,13 @@ __private const char* parse_cmdarg(ccdoc_s* ccdoc, char** page, const char* pars
 	int argrq;
 	substr_s argdesc;
 	
-	ds_cat(page, _CMDARG, str_len(_CMDARG));
-	
 	while( ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc) ){
-		ds_sprintf(page, ds_len(*page), "-%c|--%.*s|%s|",
+		ds_sprintf(page, ds_len(*page), ".TP\n.B \\-%c \\-\\-%.*s\n.I %s\n",
 			argsh,
 			substr_format(&argln),
 			argrq ? _CMDARG_RQ_Y : _CMDARG_RQ_N
 		);
-		ccdoc_cat_ref_resolver(page, ccdoc, argdesc.begin, substr_len(&argdesc), md_push_ref, ccdoc);
+		ccdoc_cat_ref_resolver(page, ccdoc, argdesc.begin, substr_len(&argdesc), man_push_ref, ccdoc);
 		ds_push(page, '\n');
 	}
 
@@ -163,7 +136,7 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 		}
 		else if( !incode && parse[0] == '\\' && parse[1] == 'n' ){
 			parse += 2;
-			md_nl(page);
+			ds_push(page, '\n');
 			continue;	
 		}
 
@@ -175,13 +148,12 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 					++parse;
 					substr_s retdesc;
 					ccdoc_parse_ret(&parse, &retdesc);
-					ds_cat(page, _RETURN, str_len(_RETURN));
+					man_title(page, _RETURN, str_len(_RETURN));
 					if( ret && ret->type.begin ){
 						substr_s tmp = {.begin = _TYPE };
 						tmp.end = tmp.begin +str_len(_TYPE);
-						md_attribute(page, 1, &tmp);
-						md_attribute(page, 0, &ret->type);
-						md_nl(page);
+						man_attribute(page, 1, &tmp);
+						man_attribute(page, 0, &ret->type);
 					}
 					ds_cat(page, retdesc.begin, substr_len(&retdesc));
 					ds_push(page, '\n');
@@ -197,7 +169,7 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 					substr_s t;
 					ccdoc_parse_title(&parse, &titleid, &t);
 					ds_push(page, '\n');
-					md_title(page, titleid, t.begin, substr_len(&t));
+					man_title(page, t.begin, substr_len(&t));
 					break;
 				}
 			
@@ -205,7 +177,6 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 					dbg_info("DC_CODE_B");
 					++parse;
 					incode = 1;
-					md_code(page, "C");
 					break;
 				}
 				
@@ -219,7 +190,7 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 					++parse;
 					substr_s name, link;
 					ccdoc_parse_link(&parse, &name, &link);
-					md_link(page, name.begin, substr_len(&name), link.begin, substr_len(&link));
+					man_link(page, ccdoc, &link);
 					break;
 				}
 				
@@ -227,14 +198,14 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 					dbg_info("DC_ATTRIBUTE");
 					substr_s txt;
 					int att = ccdoc_parse_attribute(&parse, &txt);
-					md_attribute(page, att, &txt);
+					man_attribute(page, att, &txt);
 					break;
 				}
 
 				case CCDOC_DC_REF:{
 					dbg_info("DC_REF");
 					++parse;
-					ccdoc_parse_ref(ccdoc, &parse, page, md_push_ref, ccdoc);
+					ccdoc_parse_ref(ccdoc, &parse, page, man_push_ref, ccdoc);
 					break;
 				}
 
@@ -246,13 +217,12 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 			incode = 0;
 			parse += 2;
 			if( (*page)[ds_len(*page)-1] != '\n' ) ds_push(page, '\n');
-			md_code(page, NULL);
 		}
 		else if( !incode && *parse == CCDOC_DC_ESCAPE ){
 			dbg_info("DC_ESCAPE");
 			++parse;
 			if( *parse == 'n' ){
-				md_nl(page);
+				ds_push(page, '\n');
 			}
 			else if( *parse == '\\' ) {
 				ds_push(page, *parse++);
@@ -269,17 +239,16 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 	}
 
 	if( vsubargs ){
-		md_nl(page);
 		ds_push(page, '\n');
 		substr_s undoc = {.begin = _UNDOCUMENTED};
 		undoc.end = undoc.begin + str_len(_UNDOCUMENTED);
 		vector_foreach(vsubargs, i){
-			md_argument(page, ccdoc, &vargs[i].type, &vargs[i].name, vsubargs[i].begin || vargs[i].desc.begin ? &vsubargs[i] : &undoc, &vargs[i].desc );
+			man_argument(page, ccdoc, &vargs[i].type, &vargs[i].name, vsubargs[i].begin || vargs[i].desc.begin ? &vsubargs[i] : &undoc, &vargs[i].desc );
 		}
 	}
 }
 
-__private void md_section_c(char** page, ccdoc_s* ccdoc, ccfile_s* file, const char* secName, const char* secDesc, ctype_e type ){
+__private void man_section_c(char** page, ccdoc_s* ccdoc, ccfile_s* file, const char* secName, const char* secDesc, ctype_e type ){
 	int count = 0;
 	vector_foreach(file->vdefs, i){
 		if( file->vdefs[i].def.type != type ) continue;
@@ -288,51 +257,58 @@ __private void md_section_c(char** page, ccdoc_s* ccdoc, ccfile_s* file, const c
 	}
 	if( !count ) return;
 
-	md_title(page, CCDOC_SECTION_HID, secName, str_len(secName));
+	man_sh(page, secName, str_len(secName));
 	substr_s tmp = {.begin = secDesc, .end = secDesc + str_len(secDesc)};
 	desc_parse(page, ccdoc, &tmp, NULL, NULL);
 	ds_push(page, '\n');
 
 	vector_foreach(file->vdefs, i){
 		if( file->vdefs[i].def.type != type ) continue;
-		md_title(page, CCDOC_SUBSECTION_HID, file->vdefs[i].def.name.begin, substr_len(&file->vdefs[i].def.name));
+		man_title(page, file->vdefs[i].def.name.begin, substr_len(&file->vdefs[i].def.name));
 		desc_parse(page, ccdoc, &file->vdefs[i].comment, &file->vdefs[i].def.ret, file->vdefs[i].def.velement );
 		ds_push(page, '\n');
 		if( file->vdefs[i].def.code.begin ){
 			__mem_free char* code = ccparse_remove_comment_command(&file->vdefs[i].def.code);
-			md_code(page, "C");
 			ds_cat(page, code, ds_len(code));
-			md_code(page, NULL);
 		}
-		md_line(page);
+		ds_push(page, '\n');
 	}
 	ds_push(page, '\n');
 }
 
-char* ccdoc_md_build(ccdoc_s* ccdoc, ccfile_s* ccf){
+__private char* ccdoc_man_build_file(ccdoc_s* ccdoc, ccfile_s* ccf, char* manfile){
 	char* page = ds_new(CCDOC_STRING_SIZE);
-	md_title(&page, 1, ccf->name.begin, substr_len(&ccf->name));
+	man_th(&page, ccdoc, manfile, ds_len(manfile), 0);
+	man_sh(&page, ccf->name.begin, substr_len(&ccf->name));
 	desc_parse(&page, ccdoc, &ccf->desc, NULL, NULL);
 
-	md_section_c(&page, ccdoc, ccf, T_MACRO, T_MACRO_DESC, C_MACRO);
-	md_section_c(&page, ccdoc, ccf, T_ENUM, T_ENUM_DESC, C_ENUM);
-	md_section_c(&page, ccdoc, ccf, T_TYPE, T_TYPE_DESC, C_TYPE);
-	md_section_c(&page, ccdoc, ccf, T_STRUCT, T_STRUCT_DESC, C_STRUCT);
-	md_section_c(&page, ccdoc, ccf, T_FN, T_FN_DESC, C_FN);
+	man_section_c(&page, ccdoc, ccf, T_MACRO, T_MACRO_DESC, C_MACRO);
+	man_section_c(&page, ccdoc, ccf, T_ENUM, T_ENUM_DESC, C_ENUM);
+	man_section_c(&page, ccdoc, ccf, T_TYPE, T_TYPE_DESC, C_TYPE);
+	man_section_c(&page, ccdoc, ccf, T_STRUCT, T_STRUCT_DESC, C_STRUCT);
+	man_section_c(&page, ccdoc, ccf, T_FN, T_FN_DESC, C_FN);
 
 	return page;
 }
 
-void ccdoc_build_readme(ccdoc_s* ccdoc, const char* destdir){
+void ccdoc_build_man(ccdoc_s* ccdoc, const char* destdir){
+	int pn;
+	if( ccdoc_project_info(NULL, &pn, ccdoc) ) pn = 1;
+	else if( pn == 0 ) pn = 1;
+	else if( pn == 2 ) pn = 3;
+	
 	vector_foreach(ccdoc->vfiles, i){
-		if( ccdoc->vfiles[i].visual != VISUAL_INDEX ) continue;
-		__mem_free char* page = ccdoc_md_build(ccdoc, &ccdoc->vfiles[i]);
+		__mem_free char* manfile = ccdoc->vfiles[i].visual == VISUAL_INDEX ?
+			ds_dup(ccdoc->vfiles[i].name.begin, substr_len(&ccdoc->vfiles[i].name)) :
+			ds_printf("%.*s_%.*s", substr_format(&get_index(ccdoc)->name), substr_format(&ccdoc->vfiles[i].name))
+		;
+
+		__mem_free char* page = ccdoc_man_build_file(ccdoc, &ccdoc->vfiles[i], manfile);
 		dbg_info("save");
-		__mem_free char* fdest = ds_printf("%s/%s",destdir, README_MD);
+		__mem_free char* fdest = ds_printf("%s/%s.%d", destdir, manfile, pn);
 		__fd_close int fd = fd_open(fdest, "w", CCDOC_FILE_PRIV);
 		if( fd < 0 ) die("error on open file %s :: %s", fdest, str_errno());
 		if( fd_write(fd, page, ds_len(page)) != (ssize_t)ds_len(page) ) die("wrong write page on file %s :: %s", fdest, str_errno());
-		break;
 	}
 }
 

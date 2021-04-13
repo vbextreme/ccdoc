@@ -121,6 +121,7 @@ void* fd_slurp(size_t* outlen, int fd, size_t chunk, int nullchar){
 	}
 	if( nc < 0 ){
 		dbg_error("slurping");
+		dbg_errno();
 		mem_free(buf);
 		return NULL;
 	}

@@ -305,4 +305,59 @@ void ccdoc_dump(ccdoc_s* ccdoc){
 	}
 }
 
+int ccdoc_project_info(char** version, int* typeEL, ccdoc_s* ccdoc){
+	fconfigVar_s* mesonpath = fconfig_get(ccdoc->fc, CCDOC_CONF_MESON, str_len(CCDOC_CONF_MESON));
+	if( !mesonpath || mesonpath->type != FCVAR_STR ) return -1;
+	__fd_close int fd = fd_open(mesonpath->fcstr, "r", 0);
+	if( !fd ) return -1;
+	__mem_free char* data = fd_slurp(NULL, fd, 4096, 1);
+	if( !data ) return -1;
+	
+	*typeEL = 0;
+	const char* parse = data;
+
+	if( version ){
+		*version = NULL;
+		while( *(parse = str_find(parse, "version")) ){
+			parse += str_len("version");
+			parse = str_skip_hn(parse);
+			if( *parse != ':' ) continue;
+			parse = str_skip_hn(parse+1);
+			parse = ds_between(version, parse);
+			break;
+		}
+	}
+
+	parse = str_find(parse, "executable");
+	if( *parse ){
+		*typeEL = 1;
+		return 0;
+	}
+	
+	parse = str_find(data, "shared_library");
+	if( *parse ){
+		*typeEL = 2;
+		return 0;
+	}
+	
+	parse = str_find(data, "static_library");
+	if( *parse ){
+		*typeEL = 2;
+		return 0;
+	}
+	
+	parse = str_find(data, "both_library");
+	if( *parse ){
+		*typeEL = 2;
+		return 0;
+	}
+	
+	return -1;
+}
+
+
+
+
+
+
 
