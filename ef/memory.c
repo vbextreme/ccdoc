@@ -496,7 +496,7 @@ void* mem_alloc_resize(void* mem, size_t size, ssize_t extend){
 				if( !addr )	die("realloc error:%s", str_errno());
 			}
 			else{
-				dbg_info("realloc reuse memory address size:%lu realsize:%lu (total:%lu)", size, realsize, size+preSize);
+				//dbg_info("realloc reuse memory address size:%lu realsize:%lu (total:%lu)", size, realsize, size+preSize);
 				addr = orga;
 			}
 			break;
