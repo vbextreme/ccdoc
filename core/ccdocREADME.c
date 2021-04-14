@@ -98,7 +98,7 @@ __private void md_push_ref(char** page, ref_s* ref, void* ctx){
 			ccdoc_s* ccdoc = ctx;
 			fconfigVar_s* wikiSite = fconfig_get(ccdoc->fc, CCDOC_CONF_WIKI_SITE, str_len(CCDOC_CONF_WIKI_SITE));
 			if( !wikiSite || wikiSite->type != FCVAR_STR ) die("wrong wiki config");
-			__mem_free char* flink = ds_printf("%s/%.*s.md", wikiSite->fcstr, substr_format(&ref->name));
+			__mem_free char* flink = ds_printf("%s/%.*s", wikiSite->fcstr, substr_format(&ref->name));
 			md_link(page, ref->name.begin, substr_len(&ref->name), flink, ds_len(flink));
 			break;
 		}
