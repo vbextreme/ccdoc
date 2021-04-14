@@ -148,10 +148,10 @@
  * the format begin with \@| and next usage can add with |\n
  * \@| @i'short' @i'long' @i'required' @i'descript'\n
  * | @i'short' @i'long' @i'required' @i'descript'\n
- * @b'short' is char for short format option
- * @b'long' is long format option
- * @b'required' 1,0 display yes/no on required arguments
- * @b'descript' a description of command.
+ * @b'short' is char for short format option\n
+ * @b'long' is long format option\n
+ * @b'required' 1,0 display yes/no on required arguments\n
+ * @b'descript' a description of command.\n
  * examples:
  * @{
  * @C-file 'test'
