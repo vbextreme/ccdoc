@@ -98,7 +98,7 @@ for index page the name is same to filename, and other page are formatting to in
 ## C Comment
 ccdoc add some special command to write in C comment, in this mode you can control output, only comment start with **-** is readed<br />
 
-read [Comment Command](https://github.com/vbextreme/ccdoc/wiki/Comment%2Command) for more details
+read [Comment Command](https://github.com/vbextreme/ccdoc/wiki/Comment%20Command) for more details
 
 
 ## News
