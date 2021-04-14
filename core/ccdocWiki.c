@@ -2,9 +2,11 @@
 
 #define _SIDEBAR "_Sidebar"
 
+#define _URL_SPACE "%20"
+
 __private char* md_link_escape(const char* str, size_t len){
 	char* ds = ds_dup(str, len);
-	ds_replace(&ds, " ", "%20", 2);
+	ds_replace(&ds, " ", _URL_SPACE, str_len(_URL_SPACE));
 	return ds;
 }
 
