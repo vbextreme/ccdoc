@@ -60,7 +60,7 @@
  *
  * @^2 'C Comment'
  * ccdoc add some special command to write in C comment, in this mode you can control output, only comment start with @b'-' is readed\n
- * read *'Comment Command' for more details
+ * read @*'Comment Command' for more details
  *
  * @^2 'News'
  * @b'0.1'  ready, html,README,wiki,man\n
