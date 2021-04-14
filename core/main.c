@@ -4,12 +4,11 @@
 /*-file 'ccdoc'
  * this project was born because doxygen has never impressed me, I have always found it difficult for create html doc, man, readme and wiki.\n
  * ccdoc only works with C, if you don't use C then you either change language or change software.\n
- * \n
- * ccdoc is wip, really not use in production\n
+ * ccdoc can generate HTML, README.md, WIKI and man page from your C Comment
  * \n
  * Released under GPL v3\n
  * \n
- * @^2 'TODO' write documentation for wrinting documentation
+ * @^2 'todo' write documentation for wrinting documentation
  * @^2 'How To'
  * @^3 'Build and Install'
  * @{
@@ -17,42 +16,73 @@
  * $ cd build
  * $ ninja
  * @}
- * @^3 'Test'
- * @{
- * TODO
- * @}
- * @^3 'Template' for change html output edit template/template.html file
  *
  * @^2 'Usage:'
- * @| c 'config' 1 'change default config path, default is cc.doc'
+ * ccdoc search a cc.doc file where reading project info\n
+ * @| c 'config' 1 'change default config path, default is ./cc.doc'
  * | h 'help'     0 'show this'
  *
- * @^3 'configure'
- * read wiki/html/man fconfigure\ format for more documentation\n
- * default ccdoc search cc.doc file and read configuration\n
+ * @^2 'configure'
+ * you can change all layout of html page, *ccodcHTML for more info.\n
+ * \n
+ * can find format configuration on *'fconfigure\ format'\n
  * @{
  * destdir_html   = ./doc/html               // default value where stored .html
  * destdir_readme = ./doc/md                 // default value where stored README.md
+ * destdir_wiki   = ./doc/wiki               // default value where stored wiki files
+ * destdir_readme = ./doc/man                // default value where stored man files
+ * meson_path     = ./meson.build            // if you use meson, ccdoc read this file for get version and type of software
  * template_html  = ./template/template.html // default value
- * template_css   = ./template               // default value where read css files to copy in destdir_html
+ * template_css   = ./template               // default value where read all css files to copy in destdir_html
  * src            = []                       // src is not default defined, required a vector of path where reading files
  * dump                                      // if exists dump ccdoc
  * html                                      // if exists build html doc
  * css                                       // if exists copy css
  * readme                                    // if exists build readme
+ * wiki                                      // if exists build wiki
  * man                                       // if exists build man
  * @}
+ * // is a comment\n
+ * src contains files where search C Comment, you can add in this mode:\n
+ * @{
+ * src = [ a.c, b.c]
+ * @}
+ * or
+ * @{
+ * src = []
+ * src += [ a.c ]
+ * src += [ b.c ]
+ * @}
+ * if string contains space you can quote or double quote.\n
+ * probably you want set destdir_readme to ./ and destsir_wiki to ./wiki.<usernama> for automatic overwrite README.md and Wiki pages.\n
+ * man pages generate name in this mode:\n
+ * for index page the name is same to filename, and other page are formatting to <index>_<filename>\n
  *
+ * @^2 'C Comment'
+ * ccdoc add some special command to write in C comment, in this mode you can control output, only comment start with @b'-' is readed\n
+ * read *'Comment Command' for more details
  *
  * @^2 'News'
- * @b'0.2'  change option to config\n
- * @b'0.1'  build README.md\n
+ * @b'0.1'  ready, html,README,wiki,man\n
  * @b'0.0'  begin\n
  *
 */
 
 /*-visual index*/
 
+/*-file 'Comment Command'
+ * ccdoc add some special command to write in C comment, in this mode you can control output.\n
+ * only comment start with @b'-' is readed\n
+ * @^2 'file'
+ * when start write documentation you need to create a file, each file.c, file.h, file.* can contains more file command with different filename.\n
+ * if you not write file command, other command are associated to last file selected.\n
+ * command file need an argument, @i'file name', in quote, separated or no with space.\n
+ * examples:
+ * @{
+ * /*-
+*/
+
+/*-visual side*/
 
 typedef enum{
 	A_CONFIG,

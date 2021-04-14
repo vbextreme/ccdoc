@@ -9,6 +9,7 @@
 #include <ef/file.h>
 #include <ef/fconfig.h>
 
+/*-file 'file name' descript */
 /*-title 'title' descript*/
 /*-visual top/side/index*/
 /*-alias 'name' 'alias'*/
