@@ -433,7 +433,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 			//ds_push(&desc, *parse++);
 		}
 		else if ( !incode ){
-			dbg_info("CHAR:%c", *parse);
+			//dbg_info("CHAR:%c", *parse);
 			ds_push(&desc, *parse++);
 		}
 		else{

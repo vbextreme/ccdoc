@@ -73,15 +73,117 @@
 /*-file 'Comment Command'
  * ccdoc add some special command to write in C comment, in this mode you can control output.\n
  * only comment start with @C- is readed\n
+ * 
  * @^2 'file'
  * when start write documentation you need to create a file, each file.c, file.h, file.* can contains more file command with different filename.\n
  * if you not write file command, other command are associated to last file selected.\n
  * command file need an argument, @i'file name', in quote, separated or no with space.\n
+ * text after filename is a file description.\n
  * examples:
  * @{
- * -
- * 
+ * @C-file 'Test' description
+ * * descript ....
+ * @c
  * @}
+ * 
+ * @^2 'sel'
+ * if you want change current file associations you can use sel, for examples, you can create file on .h and other comment in other file.\n
+ * examples:\n
+ * @i'file.h'
+ * @{
+ * @C-file 'test' simple test @c
+ * @}
+ * @i'file.c'
+ * @{ 
+ * @C-sel 'test' @c 
+ * @}
+ * 
+ * @^2 'visual'
+ * each file need a visual, where display a page.\n
+ * visual accept 3 type:\n
+ * @b'index' the begin page, this file is used for create README and  used as prefix name of other man page\n
+ * @b'side'  this page is display in sidebar on WIKI or HTML\n
+ * @b'top'   this page is display in topbar on HTML and sidebar on WIKI\n
+ * examples:\n
+ * @{
+ * @C-file 'test' simple test@c
+ * @C-visual index@c
+ * @}
+ *
+ * @^2 'alias'
+ * create alias name for each reference, accept two arguments.\n
+ * @i'name of reference', @i'name of alias'\n 
+ * examples:\n
+ * @{
+ * @C-file 'test' simple test@c
+ * @C-visual index@c
+ * @C-alias 'test' 'simple test'@c
+ * @}
+ * now you can refer to test file with 'simple test'
+ *
+ * @^2 'str'
+ * create a string, if you need to rewrite many time a string you can use this\n
+ * examples:\n
+ * @{
+ * @C-file 'test' simple test@c
+ * @C-visual index@c
+ * @C-str 'hw' 'Hello, world!'@c
+ * @}
+ *
+ * @^2 'Auto Doc'
+ * the auto doc command is @C- without other command, in this mode ccdoc reading descript and parse C code for generate documentation.\n
+ * this mode is usefull when write documentation for macro, structure, function, etc.\n
+ * examples:\n
+ * @{
+ * @C- simple void function@c
+ * void foo(void);
+ * @}
+ *
+ * @^2 'Descript Command'
+ * In addition on the basic command ccdoc export description command, description command is special command for writing best description.\n
+ * all descript command start with \@, only new line you can write with \\n.
+
+ * @^3 'Command Arguments'
+ * if you writing cli command probably you want generate usage documentation, is very simple with @i'command arguments'
+ * the format begin with \@| and next usage can add with |\n
+ * \@| @i'short' @i'long' @i'required' @i'descript'\n
+ * | @i'short' @i'long' @i'required' @i'descript'\n
+ * @b'short' is char for short format option
+ * @b'long' is long format option
+ * @b'required' 1,0 display yes/no on required arguments
+ * @b'descript' a description of command.
+ * examples:
+ * @{
+ * @C-file 'test'
+ * * simple software
+ * * @| h 'help' 0 'display this'
+ * * | f 'file' 1 'select filename'
+ * @c
+ * @}
+ *
+ * @^3 'Return'
+ * \@<
+ *
+ * @^3 'Argument'
+ * \@>N
+ *
+ * @^3 'Reference'
+ * \@*
+ *
+ * @^3 'Title'
+ * \@^
+ *
+ * @^3 'Code'
+ * \@{ \@}
+ *
+ * @^3 'Link'
+ * \@?
+ *
+ * @^3 'Text Attribute'
+ * \@b \@i \@s
+ *
+ * @^3 'Escape'
+ * \@C \@c \\
 */
 
 /*-visual side*/

@@ -10,7 +10,7 @@
 #include <ef/fconfig.h>
 
 /*-file 'file name' descript */
-/*-title 'title' descript*/
+/*-sel 'file name'*/
 /*-visual top/side/index*/
 /*-alias 'name' 'alias'*/
 /*-str 'name' 'value'*/
