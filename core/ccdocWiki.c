@@ -14,7 +14,7 @@ __private void build_md_sidebar(ccdoc_s* ccdoc, const char* destdir){
 	if( !wikiSite || wikiSite->type != FCVAR_STR ) die("wrong wiki config");
 	vector_foreach(ccdoc->vfiles, i){
 		__mem_free char* lk = md_link_escape(ccdoc->vfiles[i].name.begin, substr_len(&ccdoc->vfiles[i].name));
-		ds_sprintf(&side, ds_len(side), "* [%.*s](%s/%s.md)\n", substr_format(&ccdoc->vfiles[i].name), wikiSite->fcstr, lk);
+		ds_sprintf(&side, ds_len(side), "* [%.*s](%s/%s)\n", substr_format(&ccdoc->vfiles[i].name), wikiSite->fcstr, lk);
 	}
 
 	dbg_info("save");
