@@ -1,0 +1,234 @@
+.TH ccdoc_Comment Command 1
+.SH Comment Command
+ccdoc add some special command to write in C comment, in this mode you can control output.
+.br
+only comment start with /*- is readed
+.br
+
+.RE
+.PP
+.RS 1
+.B file
+.br
+when start write documentation you need to create a file, each file.c, file.h, file.* can contains more file command with different filename.
+.br
+if you not write file command, other command are associated to last file selected.
+.br
+command file need an argument, 
+.I file name
+, in quote, separated or no with space.
+.br
+text after filename is a file description.
+.br
+examples:
+.br
+/*-file 'Test' description
+.br
+* descript ....
+.br
+*/
+.br
+
+.RE
+.PP
+.RS 1
+.B sel
+.br
+if you want change current file associations you can use sel, for examples, you can create file on .h and other comment in other file.
+.br
+examples:
+.br
+.I file.h
+.br
+/*-file 'test' simple test */
+.br
+.I file.c
+ 
+.br
+/*-sel 'test' */ 
+.br
+
+.RE
+.PP
+.RS 1
+.B visual
+.br
+each file need a visual, where display a page.
+.br
+visual accept 3 type:
+.br
+.B index
+ the begin page, this file is used for create README and  used as prefix name of other man page
+.br
+.B side
+  this page is display in sidebar on WIKI or HTML
+.br
+.B top
+   this page is display in topbar on HTML and sidebar on WIKI
+.br
+examples:
+.br
+.br
+/*-file 'test' simple test*/
+.br
+/*-visual index*/
+.br
+
+.RE
+.PP
+.RS 1
+.B alias
+.br
+create alias name for each reference, accept two arguments.
+.br
+.I name of reference
+, 
+.I name of alias
+.br
+ examples:
+.br
+.br
+/*-file 'test' simple test*/
+.br
+/*-visual index*/
+.br
+/*-alias 'test' 'simple test'*/
+.br
+now you can refer to test file with 'simple test'
+.RE
+.PP
+.RS 1
+.B str
+.br
+create a string, if you need to rewrite many time a string you can use this
+.br
+examples:
+.br
+.br
+/*-file 'test' simple test*/
+.br
+/*-visual index*/
+.br
+/*-str 'hw' 'Hello, world!'*/
+.br
+
+.RE
+.PP
+.RS 1
+.B Auto Doc
+.br
+the auto doc command is /*- without other command, in this mode ccdoc reading descript and parse C code for generate documentation.
+.br
+this mode is usefull when write documentation for macro, structure, function, etc.
+.br
+examples:
+.br
+.br
+/*- simple void function*/
+.br
+void foo(void);
+.br
+
+.RE
+.PP
+.RS 1
+.B Descript Command
+.br
+In addition on the basic command ccdoc export description command, description command is special command for writing best description.
+.br
+all descript command start with @, only new line you can write with \n.
+.RE
+.PP
+.RS 2
+.B Command Arguments
+.br
+if you writing cli command probably you want generate usage documentation, is very simple with 
+.I command arguments
+the format begin with @| and next usage can add with |
+.br
+@| 
+.I short
+ 
+.I long
+ 
+.I required
+ 
+.I descript
+.br
+| 
+.I short
+ 
+.I long
+ 
+.I required
+ 
+.I descript
+.br
+.B short
+ is char for short format option
+.B long
+ is long format option
+.B required
+ 1,0 display yes/no on required arguments
+.B descript
+ a description of command.examples:
+.br
+/*-file 'test'
+.br
+* simple software
+.br
+* @| h 'help' 0 'display this'
+.br
+* | f 'file' 1 'select filename'
+.br
+*/
+.br
+
+.RE
+.PP
+.RS 2
+.B Return
+.br
+@<
+.RE
+.PP
+.RS 2
+.B Argument
+.br
+@>N
+.RE
+.PP
+.RS 2
+.B Reference
+.br
+@*
+.RE
+.PP
+.RS 2
+.B Title
+.br
+@^
+.RE
+.PP
+.RS 2
+.B Code
+.br
+@{ @}
+.RE
+.PP
+.RS 2
+.B Link
+.br
+@?
+.RE
+.PP
+.RS 2
+.B Text Attribute
+.br
+@b @i @s
+.RE
+.PP
+.RS 2
+.B Escape
+.br
+@C @c \

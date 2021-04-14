@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<!-- Header -->
+<html lang="en">
+<title>ccdoc</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="w3-theme-black.css">
+<link rel="stylesheet" href="font-awesome.min.css">
+<link rel="stylesheet" href="scroll.css">
+
+<style>
+	html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+	.w3-sidebar {
+		z-index: 3;
+		width: 15%;
+		top: 43px;
+		bottom: 0;
+		height: inherit;
+	}
+</style>
+
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+	<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+		<a href="javascript:void(0)" onclick="w3_open()" class="w3-bar-item w3-button w3-hide-small w3-hover-white w3-right"><i class="fa fa-bars"></i></a>
+
+<!--navbar.current
+<a href="&&LINK&&" class="w3-bar-item w3-button w3-theme-l1">&&NAME&&</a>
+-->
+
+<!--navbar.node
+<a href="&&LINK&&" class="w3-bar-item w3-button w3-hide-small w3-hover-white">&&NAME&&</a>
+-->
+		<a href="ccdoc.html" class="w3-bar-item w3-button w3-theme-l1">ccdoc</a>
+
+	</div>
+</div>
+
+<!-- Sidebar -->
+<nav class="w3-sidebar w3-bar-block w3-small w3-theme-l3" id="mySidebar">
+	<a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu"><i class="fa fa-remove"></i></a>
+
+<!--sidebar.group
+<div class="w3-container w3-dark-grey">&&NAME&&</div>
+-->
+
+<!--sidebar.node
+<a class="w3-bar-item w3-button" href="&&LINK&&">&&NAME&&</a>
+-->
+
+	<div class="w3-container w3-dark-grey">FILES
+</div>
+<a class="w3-bar-item w3-button" href="Comment Command.html">Comment Command</a>
+
+</nav>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<div id="mainContent" class="w3-main" style="margin-left:15%">
+
+<!--content.section
+<div class="w3-row w3-padding-64 w3-bottombar w3-theme-l5">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.section.main
+<div class="w3-twothird w3-container">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.section.extra
+<div class="w3-twothird w3-container">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.title.begin
+<h&&TITLEID&& id="&&ID&&" class="w3-text-blue-grey">
+-->
+<!--content.title.end
+</h&&TITLEID&&>
+-->
+
+<!--content.text.begin
+<p class="w3-leftbar" style="padding-left:10px">
+-->
+<!--content.text.end
+</p>
+-->
+
+<!--content.cmdargs.begin
+<table class="w3-table-all w3-striped w3-bordered w3-margin-bottom">
+<tr class="w3-blue-grey">
+	<th>Short</th>
+	<th>Long</th>
+	<th>Required</th>
+	<th>Descript</th>
+</tr>
+-->
+
+<!--content.cmdargs.content
+<tr>
+	<th>-&&SHORT&&</th>
+	<th>--&&LONG&&</th>
+	<th>&&REQUIRED&&</th>
+	<th>&&DESC&&</th>
+</tr>
+-->
+
+<!--content.cmdargs.end
+</table>
+-->
+
+<!--content.args.begin
+<table class="w3-table-all w3-striped w3-bordered w3-margin-bottom">
+<tr class="w3-blue-grey">
+	<th>Type</th>
+	<th>Name</th>
+	<th>Descript</th>
+</tr>
+-->
+
+<!--content.args.end
+</table>
+-->
+
+<!--content.args.content
+<tr>
+	<th>&&TYPE&&</th>
+	<th>&&NAME&&</th>
+	<th>&&DESC&&</th>
+</tr>
+-->
+
+<!--content.return
+<table class="w3-table-all w3-striped w3-bordered w3-margin-bottom">
+	<tr class="w3-grey">
+		<th>Return:</th>
+		<th>&&TYPE&&</th>
+		<th>&&DESC&&</th>
+	</tr>
+</table>
+-->
+
+<!--content.link
+<a href="&&LINK&&">&&NAME&&</a>
+-->
+
+<!--content.code.begin
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+-->
+<!--content.code.end
+		</pre>
+	</div>
+</div>
+-->
+
+<!--content.bold.begin
+<strong>
+-->
+<!--content.bold.end
+</strong>
+-->
+
+<!--content.italic.begin
+<em>
+-->
+<!--content.italic.end
+</em>
+-->
+
+<!--content.strike.begin
+<del>
+-->
+<!--content.strike.end
+</del>
+-->
+
+
+<!--section.files.title
+FILES
+-->
+
+<!--section.macro.title
+MACRO
+-->
+
+<!--section.macro.desc
+list of macro
+-->
+
+<!--section.enum.title
+ENUM
+-->
+<!--section.enum.desc
+list of enum
+-->
+
+<!--section.type.title
+TYPE
+-->
+<!--section.type.desc
+list of type
+-->
+
+<!--section.struct.title
+STRUCT
+-->
+<!--section.struct.desc
+list of struct
+-->
+
+<!--section.fn.title
+API
+-->
+<!--section.fn.desc
+list of functions
+-->
+
+<!--section.subsection
+<hr class="w3-border-blue-grey" style="width:100%; border-width:2px;"
+-->
+
+	<div class="w3-row w3-padding-64 w3-bottombar w3-theme-l5">
+	<div class="w3-twothird w3-container">
+	<h1 id="ccdoc" class="w3-text-blue-grey">
+ccdoc</h1>
+<p class="w3-leftbar" style="padding-left:10px">
+this project was born because doxygen has never impressed me, I have always found it difficult for create html doc, man, readme and wiki.</br>
+ccdoc only works with C, if you don't use C then you either change language or change software.</br>
+ccdoc can generate HTML, README.md, WIKI and man page from your C Comment
+</br>
+Released under GPL v3</br>
+</br>
+</p>
+<h2 id="todo" class="w3-text-blue-grey">
+todo</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+write documentation for wrinting documentation
+</p>
+<h2 id="How To" class="w3-text-blue-grey">
+How To</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+</p>
+<h3 id="Build and Install" class="w3-text-blue-grey">
+Build and Install</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>$ meson build</br>$ cd build</br>$ ninja</br></pre>
+	</div>
+</div>
+
+
+</p>
+<h2 id="Usage:" class="w3-text-blue-grey">
+Usage:</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+ccdoc search a cc.doc file where reading project info</br>
+<table class="w3-table-all w3-striped w3-bordered w3-margin-bottom">
+<tr class="w3-blue-grey">
+	<th>Short</th>
+	<th>Long</th>
+	<th>Required</th>
+	<th>Descript</th>
+</tr>
+<tr>
+	<th>-c</th>
+	<th>--config</th>
+	<th>yes</th>
+	<th>change default config path, default is ./cc.doc</th>
+</tr>
+<tr>
+	<th>-h</th>
+	<th>--help</th>
+	<th>no</th>
+	<th>show this</th>
+</tr>
+</table>
+</p>
+<h2 id="configure" class="w3-text-blue-grey">
+configure</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+you can change all layout of html page, *ccodcHTML for more info.</br>
+</br>
+can find format configuration on *'fconfigure format'</br>
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>destdir_html   = ./doc/html               // default value where stored .html</br>destdir_readme = ./doc/md                 // default value where stored README.md</br>destdir_wiki   = ./doc/wiki               // default value where stored wiki files</br>destdir_readme = ./doc/man                // default value where stored man files</br>meson_path     = ./meson.build            // if you use meson, ccdoc read this file for get version and type of software</br>template_html  = ./template/template.html // default value</br>template_css   = ./template               // default value where read all css files to copy in destdir_html</br>src            = []                       // src is not default defined, required a vector of path where reading files</br>dump                                      // if exists dump ccdoc</br>html                                      // if exists build html doc</br>css                                       // if exists copy css</br>readme                                    // if exists build readme</br>wiki                                      // if exists build wiki</br>man                                       // if exists build man</br></pre>
+	</div>
+</div>
+
+// is a comment</br>
+src contains files where search C Comment, you can add in this mode:</br>
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>src = [ a.c, b.c]</br></pre>
+	</div>
+</div>
+
+or
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>src = []</br>src += [ a.c ]</br>src += [ b.c ]</br></pre>
+	</div>
+</div>
+
+if string contains space you can quote or double quote.</br>
+probably you want set destdir_readme to ./ and destsir_wiki to ./wiki.usernama for automatic overwrite README.md and Wiki pages.</br>
+man pages generate name in this mode:</br>
+for index page the name is same to filename, and other page are formatting to index_filename</br>
+
+</p>
+<h2 id="C Comment" class="w3-text-blue-grey">
+C Comment</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+ccdoc add some special command to write in C comment, in this mode you can control output, only comment start with <strong>
+-</strong>
+ is readed</br>
+read *'Comment Command' for more details
+
+</p>
+<h2 id="News" class="w3-text-blue-grey">
+News</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+<strong>
+0.1</strong>
+  ready, html,README,wiki,man</br>
+<strong>
+0.0</strong>
+  begin</br>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<footer id="myFooter">
+	<div class="w3-container w3-theme-l2 w3-padding-32">
+		<h4>Footer</h4>
+	</div>
+
+	<div class="w3-container w3-theme-l1">
+		<p>Powered by <a href="#" target="_blank">vbextreme</a></p>
+	</div>
+</footer>
+
+<!-- END MAIN -->
+</div>
+
+<script>
+var mySidebar = document.getElementById("mySidebar");
+var overlayBg = document.getElementById("myOverlay");
+var mainContent = document.getElementById("mainContent");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+	if (mySidebar.style.display === 'block') {
+		mainContent.style.marginLeft = "2px";
+		mySidebar.style.display = 'none';
+		overlayBg.style.display = "none";
+	}
+	else{
+		mainContent.style.marginLeft = "15%";
+		mySidebar.style.display = 'block';
+		overlayBg.style.display = "block";
+	}
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+	mainContent.style.marginLeft = "2px";
+	mySidebar.style.display = "none";
+	overlayBg.style.display = "none";
+}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,137 @@
+.TH ccdoc 1
+.SH ccdoc
+this project was born because doxygen has never impressed me, I have always found it difficult for create html doc, man, readme and wiki.
+.br
+ccdoc only works with C, if you don't use C then you either change language or change software.
+.br
+ccdoc can generate HTML, README.md, WIKI and man page from your C Comment
+.br
+Released under GPL v3
+.br
+.br
+
+.PP
+.RS 1
+.B todo
+.br
+write documentation for wrinting documentation
+.RE
+.PP
+.RS 1
+.B How To
+.br
+
+.RE
+.PP
+.RS 2
+.B Build and Install
+.br
+.br
+$ meson build
+.br
+$ cd build
+.br
+$ ninja
+.br
+
+.RE
+.PP
+.RS 1
+.B Usage:
+.br
+ccdoc search a cc.doc file where reading project info
+.br
+.TP
+.B \-c \-\-config
+.I yes
+change default config path, default is ./cc.doc
+.TP
+.B \-h \-\-help
+.I no
+show this
+
+
+.RE
+.PP
+.RS 1
+.B configure
+.br
+you can change all layout of html page, *ccodcHTML for more info.
+.br
+.br
+can find format configuration on *'fconfigure format'
+.br
+.br
+destdir_html   = ./doc/html               // default value where stored .html
+.br
+destdir_readme = ./doc/md                 // default value where stored README.md
+.br
+destdir_wiki   = ./doc/wiki               // default value where stored wiki files
+.br
+destdir_readme = ./doc/man                // default value where stored man files
+.br
+meson_path     = ./meson.build            // if you use meson, ccdoc read this file for get version and type of software
+.br
+template_html  = ./template/template.html // default value
+.br
+template_css   = ./template               // default value where read all css files to copy in destdir_html
+.br
+src            = []                       // src is not default defined, required a vector of path where reading files
+.br
+dump                                      // if exists dump ccdoc
+.br
+html                                      // if exists build html doc
+.br
+css                                       // if exists copy css
+.br
+readme                                    // if exists build readme
+.br
+wiki                                      // if exists build wiki
+.br
+man                                       // if exists build man
+.br
+// is a comment
+.br
+src contains files where search C Comment, you can add in this mode:
+.br
+.br
+src = [ a.c, b.c]
+.br
+or
+.br
+src = []
+.br
+src += [ a.c ]
+.br
+src += [ b.c ]
+.br
+if string contains space you can quote or double quote.
+.br
+probably you want set destdir_readme to ./ and destsir_wiki to ./wiki.usernama for automatic overwrite README.md and Wiki pages.
+.br
+man pages generate name in this mode:
+.br
+for index page the name is same to filename, and other page are formatting to index_filename
+.br
+
+.RE
+.PP
+.RS 1
+.B C Comment
+.br
+ccdoc add some special command to write in C comment, in this mode you can control output, only comment start with 
+.B -
+ is readed
+.br
+read *'Comment Command' for more details
+.RE
+.PP
+.RS 1
+.B News
+.br
+.B 0.1
+  ready, html,README,wiki,man
+.br
+.B 0.0
+  begin
+.br

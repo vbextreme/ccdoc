@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<!-- Header -->
+<html lang="en">
+<title>Comment Command</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="w3.css">
+<link rel="stylesheet" href="w3-theme-black.css">
+<link rel="stylesheet" href="font-awesome.min.css">
+<link rel="stylesheet" href="scroll.css">
+
+<style>
+	html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+	.w3-sidebar {
+		z-index: 3;
+		width: 15%;
+		top: 43px;
+		bottom: 0;
+		height: inherit;
+	}
+</style>
+
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+	<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+		<a href="javascript:void(0)" onclick="w3_open()" class="w3-bar-item w3-button w3-hide-small w3-hover-white w3-right"><i class="fa fa-bars"></i></a>
+
+<!--navbar.current
+<a href="&&LINK&&" class="w3-bar-item w3-button w3-theme-l1">&&NAME&&</a>
+-->
+
+<!--navbar.node
+<a href="&&LINK&&" class="w3-bar-item w3-button w3-hide-small w3-hover-white">&&NAME&&</a>
+-->
+		<a href="ccdoc.html" class="w3-bar-item w3-button w3-hide-small w3-hover-white">ccdoc</a>
+
+	</div>
+</div>
+
+<!-- Sidebar -->
+<nav class="w3-sidebar w3-bar-block w3-small w3-theme-l3" id="mySidebar">
+	<a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu"><i class="fa fa-remove"></i></a>
+
+<!--sidebar.group
+<div class="w3-container w3-dark-grey">&&NAME&&</div>
+-->
+
+<!--sidebar.node
+<a class="w3-bar-item w3-button" href="&&LINK&&">&&NAME&&</a>
+-->
+
+	<div class="w3-container w3-dark-grey">FILES
+</div>
+<a class="w3-bar-item w3-button" href="Comment Command.html">Comment Command</a>
+
+</nav>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<div id="mainContent" class="w3-main" style="margin-left:15%">
+
+<!--content.section
+<div class="w3-row w3-padding-64 w3-bottombar w3-theme-l5">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.section.main
+<div class="w3-twothird w3-container">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.section.extra
+<div class="w3-twothird w3-container">
+	&&CONTENT&&
+</div>
+-->
+
+<!--content.title.begin
+<h&&TITLEID&& id="&&ID&&" class="w3-text-blue-grey">
+-->
+<!--content.title.end
+</h&&TITLEID&&>
+-->
+
+<!--content.text.begin
+<p class="w3-leftbar" style="padding-left:10px">
+-->
+<!--content.text.end
+</p>
+-->
+
+<!--content.cmdargs.begin
+<table class="w3-table-all w3-striped w3-bordered w3-margin-bottom">
+<tr class="w3-blue-grey">
+	<th>Short</th>
+	<th>Long</th>
+	<th>Required</th>
+	<th>Descript</th>
+</tr>
+-->
+
+<!--content.cmdargs.content
+<tr>
+	<th>-&&SHORT&&</th>
+	<th>--&&LONG&&</th>
+	<th>&&REQUIRED&&</th>
+	<th>&&DESC&&</th>
+</tr>
+-->
+
+<!--content.cmdargs.end
+</table>
+-->
+
+<!--content.args.begin
+<table class="w3-table-all w3-striped w3-bordered w3-margin-bottom">
+<tr class="w3-blue-grey">
+	<th>Type</th>
+	<th>Name</th>
+	<th>Descript</th>
+</tr>
+-->
+
+<!--content.args.end
+</table>
+-->
+
+<!--content.args.content
+<tr>
+	<th>&&TYPE&&</th>
+	<th>&&NAME&&</th>
+	<th>&&DESC&&</th>
+</tr>
+-->
+
+<!--content.return
+<table class="w3-table-all w3-striped w3-bordered w3-margin-bottom">
+	<tr class="w3-grey">
+		<th>Return:</th>
+		<th>&&TYPE&&</th>
+		<th>&&DESC&&</th>
+	</tr>
+</table>
+-->
+
+<!--content.link
+<a href="&&LINK&&">&&NAME&&</a>
+-->
+
+<!--content.code.begin
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+-->
+<!--content.code.end
+		</pre>
+	</div>
+</div>
+-->
+
+<!--content.bold.begin
+<strong>
+-->
+<!--content.bold.end
+</strong>
+-->
+
+<!--content.italic.begin
+<em>
+-->
+<!--content.italic.end
+</em>
+-->
+
+<!--content.strike.begin
+<del>
+-->
+<!--content.strike.end
+</del>
+-->
+
+
+<!--section.files.title
+FILES
+-->
+
+<!--section.macro.title
+MACRO
+-->
+
+<!--section.macro.desc
+list of macro
+-->
+
+<!--section.enum.title
+ENUM
+-->
+<!--section.enum.desc
+list of enum
+-->
+
+<!--section.type.title
+TYPE
+-->
+<!--section.type.desc
+list of type
+-->
+
+<!--section.struct.title
+STRUCT
+-->
+<!--section.struct.desc
+list of struct
+-->
+
+<!--section.fn.title
+API
+-->
+<!--section.fn.desc
+list of functions
+-->
+
+<!--section.subsection
+<hr class="w3-border-blue-grey" style="width:100%; border-width:2px;"
+-->
+
+	<div class="w3-row w3-padding-64 w3-bottombar w3-theme-l5">
+	<div class="w3-twothird w3-container">
+	<h1 id="Comment Command" class="w3-text-blue-grey">
+Comment Command</h1>
+<p class="w3-leftbar" style="padding-left:10px">
+ccdoc add some special command to write in C comment, in this mode you can control output.</br>
+only comment start with /*- is readed</br>
+
+</p>
+<h2 id="file" class="w3-text-blue-grey">
+file</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+when start write documentation you need to create a file, each file.c, file.h, file.* can contains more file command with different filename.</br>
+if you not write file command, other command are associated to last file selected.</br>
+command file need an argument, <em>
+file name</em>
+, in quote, separated or no with space.</br>
+text after filename is a file description.</br>
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'Test' description</br>* descript ....</br>*/</br></pre>
+	</div>
+</div>
+
+
+</p>
+<h2 id="sel" class="w3-text-blue-grey">
+sel</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+if you want change current file associations you can use sel, for examples, you can create file on .h and other comment in other file.</br>
+examples:</br>
+<em>
+file.h</em>
+
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test' simple test */</br></pre>
+	</div>
+</div>
+
+<em>
+file.c</em>
+
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+ </br>/*-sel 'test' */ </br></pre>
+	</div>
+</div>
+
+
+</p>
+<h2 id="visual" class="w3-text-blue-grey">
+visual</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+each file need a visual, where display a page.</br>
+visual accept 3 type:</br>
+<strong>
+index</strong>
+ the begin page, this file is used for create README and  used as prefix name of other man page</br>
+<strong>
+side</strong>
+  this page is display in sidebar on WIKI or HTML</br>
+<strong>
+top</strong>
+   this page is display in topbar on HTML and sidebar on WIKI</br>
+examples:</br>
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test' simple test*/</br>/*-visual index*/</br></pre>
+	</div>
+</div>
+
+
+</p>
+<h2 id="alias" class="w3-text-blue-grey">
+alias</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+create alias name for each reference, accept two arguments.</br>
+<em>
+name of reference</em>
+, <em>
+name of alias</em>
+</br> 
+examples:</br>
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test' simple test*/</br>/*-visual index*/</br>/*-alias 'test' 'simple test'*/</br></pre>
+	</div>
+</div>
+
+now you can refer to test file with 'simple test'
+
+</p>
+<h2 id="str" class="w3-text-blue-grey">
+str</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+create a string, if you need to rewrite many time a string you can use this</br>
+examples:</br>
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test' simple test*/</br>/*-visual index*/</br>/*-str 'hw' 'Hello, world!'*/</br></pre>
+	</div>
+</div>
+
+
+</p>
+<h2 id="Auto Doc" class="w3-text-blue-grey">
+Auto Doc</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+the auto doc command is /*- without other command, in this mode ccdoc reading descript and parse C code for generate documentation.</br>
+this mode is usefull when write documentation for macro, structure, function, etc.</br>
+examples:</br>
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*- simple void function*/</br>void foo(void);</br></pre>
+	</div>
+</div>
+
+
+</p>
+<h2 id="Descript Command" class="w3-text-blue-grey">
+Descript Command</h2>
+<p class="w3-leftbar" style="padding-left:10px">
+In addition on the basic command ccdoc export description command, description command is special command for writing best description.</br>
+all descript command start with @, only new line you can write with \n.
+
+</p>
+<h3 id="Command Arguments" class="w3-text-blue-grey">
+Command Arguments</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+if you writing cli command probably you want generate usage documentation, is very simple with <em>
+command arguments</em>
+
+the format begin with @| and next usage can add with |</br>
+@| <em>
+short</em>
+ <em>
+long</em>
+ <em>
+required</em>
+ <em>
+descript</em>
+</br>
+| <em>
+short</em>
+ <em>
+long</em>
+ <em>
+required</em>
+ <em>
+descript</em>
+</br>
+<strong>
+short</strong>
+ is char for short format option
+<strong>
+long</strong>
+ is long format option
+<strong>
+required</strong>
+ 1,0 display yes/no on required arguments
+<strong>
+descript</strong>
+ a description of command.
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test'</br>* simple software</br>* @| h 'help' 0 'display this'</br>* | f 'file' 1 'select filename'</br>*/</br></pre>
+	</div>
+</div>
+
+
+</p>
+<h3 id="Return" class="w3-text-blue-grey">
+Return</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@<
+
+</p>
+<h3 id="Argument" class="w3-text-blue-grey">
+Argument</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@>N
+
+</p>
+<h3 id="Reference" class="w3-text-blue-grey">
+Reference</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@*
+
+</p>
+<h3 id="Title" class="w3-text-blue-grey">
+Title</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@^
+
+</p>
+<h3 id="Code" class="w3-text-blue-grey">
+Code</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@{ @}
+
+</p>
+<h3 id="Link" class="w3-text-blue-grey">
+Link</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@?
+
+</p>
+<h3 id="Text Attribute" class="w3-text-blue-grey">
+Text Attribute</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@b @i @s
+
+</p>
+<h3 id="Escape" class="w3-text-blue-grey">
+Escape</h3>
+<p class="w3-leftbar" style="padding-left:10px">
+@C @c \
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<footer id="myFooter">
+	<div class="w3-container w3-theme-l2 w3-padding-32">
+		<h4>Footer</h4>
+	</div>
+
+	<div class="w3-container w3-theme-l1">
+		<p>Powered by <a href="#" target="_blank">vbextreme</a></p>
+	</div>
+</footer>
+
+<!-- END MAIN -->
+</div>
+
+<script>
+var mySidebar = document.getElementById("mySidebar");
+var overlayBg = document.getElementById("myOverlay");
+var mainContent = document.getElementById("mainContent");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+	if (mySidebar.style.display === 'block') {
+		mainContent.style.marginLeft = "2px";
+		mySidebar.style.display = 'none';
+		overlayBg.style.display = "none";
+	}
+	else{
+		mainContent.style.marginLeft = "15%";
+		mySidebar.style.display = 'block';
+		overlayBg.style.display = "block";
+	}
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+	mainContent.style.marginLeft = "2px";
+	mySidebar.style.display = "none";
+	overlayBg.style.display = "none";
+}
+</script>
+
+</body>
+</html>
+
