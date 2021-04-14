@@ -189,10 +189,10 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 					man_title(page, CCDOC_SUBSECTION_HID + 1, _RETURN, str_len(_RETURN));
 					if( ret && ret->type.begin ){
 						dbg_info("write type");
-						substr_s tmp = {.begin = _TYPE };
-						tmp.end = tmp.begin + str_len(_TYPE);
-						man_attribute(page, 1, &tmp);
-						man_attribute(page, 0, &ret->type);
+						//substr_s tmp = {.begin = _TYPE };
+						//tmp.end = tmp.begin + str_len(_TYPE);
+						//man_attribute(page, 1, &tmp);
+						man_attribute(page, 1, &ret->type);
 					}
 					ds_cat(page, retdesc.begin, substr_len(&retdesc));
 					ds_push(page, '\n');
