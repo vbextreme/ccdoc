@@ -54,9 +54,9 @@
  * src += [ b.c ]
  * @}
  * if string contains space you can quote or double quote.\n
- * probably you want set destdir_readme to ./ and destsir_wiki to ./wiki.<usernama> for automatic overwrite README.md and Wiki pages.\n
+ * probably you want set destdir_readme to ./ and destsir_wiki to ./wiki.usernama for automatic overwrite README.md and Wiki pages.\n
  * man pages generate name in this mode:\n
- * for index page the name is same to filename, and other page are formatting to <index>_<filename>\n
+ * for index page the name is same to filename, and other page are formatting to index_filename\n
  *
  * @^2 'C Comment'
  * ccdoc add some special command to write in C comment, in this mode you can control output, only comment start with @b'-' is readed\n
@@ -72,14 +72,16 @@
 
 /*-file 'Comment Command'
  * ccdoc add some special command to write in C comment, in this mode you can control output.\n
- * only comment start with @b'-' is readed\n
+ * only comment start with @C- is readed\n
  * @^2 'file'
  * when start write documentation you need to create a file, each file.c, file.h, file.* can contains more file command with different filename.\n
  * if you not write file command, other command are associated to last file selected.\n
  * command file need an argument, @i'file name', in quote, separated or no with space.\n
  * examples:
  * @{
- * /*-
+ * -
+ * 
+ * @}
 */
 
 /*-visual side*/

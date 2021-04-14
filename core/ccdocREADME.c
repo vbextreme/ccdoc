@@ -238,6 +238,16 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 					break;
 				}
 
+				case CCDOC_DC_OPENC:
+					++parse;
+					ds_cat(page, "/*", 0);
+				break;
+
+				case CCDOC_DC_CLOSEC:
+					++parse;
+					ds_cat(page, "*/", 0);
+				break;
+
 				default: die("unknown command desc @%c", *parse); break;
 			}
 		}
@@ -262,8 +272,23 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 				ds_push(page, *parse++);
 			}
 		}
+		else if( incode ){
+			if( parse[0] == CCDOC_DESC_COMMAND && parse[1] == CCDOC_DC_OPENC ){
+				ds_push(page, '/');
+				ds_push(page, '*');
+				parse += 2;
+			}
+			if( parse[0] == CCDOC_DESC_COMMAND && parse[1] == CCDOC_DC_CLOSEC ){
+				ds_push(page, '*');
+				ds_push(page, '/');
+				parse += 2;
+			}
+			else{
+				ds_push(page, *parse++);
+			}
+		}
 		else{
-			dbg_info("CHAR:%c", *parse);
+			//dbg_info("CHAR:%c", *parse);
 			ds_push(page, *parse++);
 		}
 	}

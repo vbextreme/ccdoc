@@ -28,6 +28,8 @@
  * @b 'bold'
  * @i 'italic'
  * @s 'strike'
+ * @C replace with open comment
+ * @c replace with close comment
  * */
 
 #define CCDOC_VFILES 4
@@ -56,6 +58,8 @@
 #define CCDOC_DC_BOLD      'b'
 #define CCDOC_DC_ITALIC    'i'
 #define CCDOC_DC_STRIKE    's'
+#define CCDOC_DC_OPENC     'C'
+#define CCDOC_DC_CLOSEC    'c'
 #define CCDOC_DC_ESCAPE    '\\'
 
 #define CCDOC_SECTION_HID    1

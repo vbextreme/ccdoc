@@ -41,7 +41,22 @@ const char* cparse_comment_command(substr_s* out, const char* code){
 	if( !*code ) return code;
 	code += str_len(_COMMENT_OPEN);
 	out->begin = code;
-	code = str_find(code, _COMMENT_CLOSE);
+
+	int in = 1;
+	while( *code ){
+		if( !strncmp(code, _COMMENT_OPEN, str_len(_COMMENT_OPEN)) ){
+			++in;
+			code += str_len(_COMMENT_OPEN);
+		}
+		else if( !strncmp(code, _COMMENT_CLOSE, str_len(_COMMENT_CLOSE)) ){
+			--in;
+			if( !in ) break;
+			code += str_len(_COMMENT_CLOSE);
+		}
+		else{
+			++code;
+		}
+	}
 	out->end = code;
 	return *code ? code + str_len(_COMMENT_CLOSE) : code;
 }

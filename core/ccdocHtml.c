@@ -72,6 +72,7 @@ __private const char* NAMETEMPLATESTR[] = {
 };
 #undef XENTRY
 
+#define HTMLESCAPE_NL 5
 typedef struct htmlEscape{
 	const char* from;
 	const char* to;
@@ -80,6 +81,8 @@ __private htmlEscape_s HTMLESCAPE[] = {
 	{.from = "&", .to = "&amp;"},
 	{.from = "<", .to = "&lt;"},
 	{.from = ">", .to = "&gt;"},
+	{.from = "@C", .to = "/*"},
+	{.from = "@c", .to = "*/"},
 	{.from = "\n", .to = "</br>"},
 	{.from = NULL, .to = NULL}
 };
@@ -306,7 +309,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 		if( *parse == '\n' ){
 			parse = ccparse_skip_hn(parse);
 			if( incode ){
-				ds_cat(&desc, HTMLESCAPE[3].to, strlen(HTMLESCAPE[3].to));
+				ds_cat(&desc, HTMLESCAPE[HTMLESCAPE_NL].to, strlen(HTMLESCAPE[HTMLESCAPE_NL].to));
 			}
 			else{
 				ds_push(&desc, '\n');
@@ -314,7 +317,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 			continue;
 		}
 		else if( !incode && parse[0] == '\\' && parse[1] == 'n' ){
-			ds_cat(&desc, HTMLESCAPE[3].to, strlen(HTMLESCAPE[3].to));
+			ds_cat(&desc, HTMLESCAPE[HTMLESCAPE_NL].to, strlen(HTMLESCAPE[HTMLESCAPE_NL].to));
 			parse += 2;
 			continue;	
 		}
@@ -402,6 +405,16 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					dbg_info("DC_REF");
 					++parse;
 					ccdoc_parse_ref(ccdoc, &parse, &desc, html_push_ref, html);
+				break;
+			
+				case CCDOC_DC_OPENC:
+					++parse;
+					ds_cat(&desc, "/*", 0);
+				break;
+
+				case CCDOC_DC_CLOSEC:
+					++parse;
+					ds_cat(&desc, "*/", 0);
 				break;
 
 				default: die("unknown command desc @%c", *parse); break;
