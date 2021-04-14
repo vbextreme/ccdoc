@@ -209,6 +209,7 @@ __private const char* cparse_fn(cdef_s* def, const char* code){
 		dbg_info("err function");
 		return code;
 	}
+	def->ret.type = def->typedec;
 
 	def->type = C_FN;
 	def->velement = vector_new(celement_s, 4);	
