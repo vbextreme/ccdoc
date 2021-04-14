@@ -42,7 +42,7 @@ you can change all layout of html page, *ccodcHTML for more info.<br />
 
 <br />
 
-can find format configuration on *'fconfigure format'<br />
+can find format configuration on [configure format](https://github.com/vbextreme/ccdoc/wiki/configure%20format)<br />
 
 
 ```C

@@ -25,7 +25,7 @@
  * @^2 'configure'
  * you can change all layout of html page, *ccodcHTML for more info.\n
  * \n
- * can find format configuration on *'fconfigure\ format'\n
+ * can find format configuration on @*'configure format'\n
  * @{
  * destdir_html   = ./doc/html               // default value where stored .html
  * destdir_readme = ./doc/md                 // default value where stored README.md

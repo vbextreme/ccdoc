@@ -7,7 +7,7 @@
 #include <ef/fconfig.h>
 #include <ef/file.h>
 
-/*-file 'fconfig format'
+/*-file 'configure format'
  * technical specifications\n
  * lvalue  format ([a-zA-Z_][a-zA-Z_0-9]*)\n
  * rvalue  format ([*a-zA-Z_][a-zA-Z_0-9]*)\n
