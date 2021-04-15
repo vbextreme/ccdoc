@@ -63,33 +63,33 @@ can find format configuration on
 .B ccdoc_configure format
 .br
 .br
-destdir_html   = ./doc/html               // default value where stored .html
+destdir_html   = ./doc/html                     // default value where stored .html
 .br
-destdir_readme = ./doc/md                 // default value where stored README.md
+destdir_readme = ./doc/md                       // default value where stored README.md
 .br
-destdir_wiki   = ./doc/wiki               // default value where stored wiki files
+destdir_wiki   = ./doc/wiki                     // default value where stored wiki files
 .br
-destdir_readme = ./doc/man                // default value where stored man files
+destdir_readme = ./doc/man                      // default value where stored man files
 .br
-meson_path     = ./meson.build            // if you use meson, ccdoc read this file for get version and type of software
+meson_path     = ./meson.build                  // if you use meson, ccdoc read this file for get version and type of software
 .br
-template_html  = ./template/template.html // default value
+template_html  = /usr/share/ccdoc/template.html // default value
 .br
-template_css   = ./template               // default value where read all css files to copy in destdir_html
+template_css   = /usr/share/ccdoc/template      // default value where read all css files to copy in destdir_html
 .br
-src            = []                       // src is not default defined, required a vector of path where reading files
+src            = []                             // src is not default defined, required a vector of path where reading files
 .br
-dump                                      // if exists dump ccdoc
+dump                                            // if exists dump ccdoc
 .br
-html                                      // if exists build html doc
+html                                            // if exists build html doc
 .br
-css                                       // if exists copy css
+css                                             // if exists copy css
 .br
-readme                                    // if exists build readme
+readme                                          // if exists build readme
 .br
-wiki                                      // if exists build wiki
+wiki                                            // if exists build wiki
 .br
-man                                       // if exists build man
+man                                             // if exists build man
 .br
 // is a comment
 .br
