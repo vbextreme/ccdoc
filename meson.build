@@ -19,6 +19,24 @@ src = [ 'ef/str.c', 'ef/utf8.c', 'ef/memory.c', 'ef/math.c', 'ef/list.c', 'ef/ve
 src += [ 'ef/optex.c', 'ef/dstr.c', 'ef/config.c' ]
 src += [ 'core/main.c', 'core/cparse.c', 'core/ccparse.c', 'core/ccdoc.c', 'core/ccdocHtml.c', 'core/ccdocREADME.c', 'core/ccdocWiki.c', 'core/ccdocMan.c' ]
 
+##############
+# data files #
+##############
+
+data =  [ 'template/template.html' ]
+data += [ 'template/w3.css' ]
+data += [ 'template/w3-theme-black.css' ]
+data += [ 'template/scroll.css' ]
+destdata = 'share/@0@'.format(meson.project_name())
+
+#############
+# man files #
+#############
+
+man =  [ 'doc/man/ccdoc.1' ]
+man += [ 'doc/man/ccdoc_Comment Command.1' ]
+man += [ 'doc/man/ccdoc_configure format.1' ]
+
 ##################
 # compiler flags #
 ##################
@@ -135,6 +153,15 @@ message('released under GPLv3')
 # build #
 #########
 
-executable(meson.project_name(), src, include_directories: includeDir, dependencies: libDeps, install: true)
+if( data.length() > 0 )
+  message('install data on @0@'.format(destdata))
+  install_data(data, install_dir: destdata)
+endif
 
+if( man.length() > 0 )
+  message('install man files')
+  install_man(man)
+endif
+
+executable(meson.project_name(), src, include_directories: includeDir, dependencies: libDeps, install: true)
 

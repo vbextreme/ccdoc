@@ -27,20 +27,20 @@
  * \n
  * can find format configuration on @*'configure format'\n
  * @{
- * destdir_html   = ./doc/html               // default value where stored .html
- * destdir_readme = ./doc/md                 // default value where stored README.md
- * destdir_wiki   = ./doc/wiki               // default value where stored wiki files
- * destdir_readme = ./doc/man                // default value where stored man files
- * meson_path     = ./meson.build            // if you use meson, ccdoc read this file for get version and type of software
- * template_html  = ./template/template.html // default value
- * template_css   = ./template               // default value where read all css files to copy in destdir_html
- * src            = []                       // src is not default defined, required a vector of path where reading files
- * dump                                      // if exists dump ccdoc
- * html                                      // if exists build html doc
- * css                                       // if exists copy css
- * readme                                    // if exists build readme
- * wiki                                      // if exists build wiki
- * man                                       // if exists build man
+ * destdir_html   = ./doc/html                     // default value where stored .html
+ * destdir_readme = ./doc/md                       // default value where stored README.md
+ * destdir_wiki   = ./doc/wiki                     // default value where stored wiki files
+ * destdir_readme = ./doc/man                      // default value where stored man files
+ * meson_path     = ./meson.build                  // if you use meson, ccdoc read this file for get version and type of software
+ * template_html  = /usr/share/ccdoc/template.html // default value
+ * template_css   = /usr/share/ccdoc/template      // default value where read all css files to copy in destdir_html
+ * src            = []                             // src is not default defined, required a vector of path where reading files
+ * dump                                            // if exists dump ccdoc
+ * html                                            // if exists build html doc
+ * css                                             // if exists copy css
+ * readme                                          // if exists build readme
+ * wiki                                            // if exists build wiki
+ * man                                             // if exists build man
  * @}
  * // is a comment\n
  * src contains files where search C Comment, you can add in this mode:\n
