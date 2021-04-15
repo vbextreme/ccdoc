@@ -31,7 +31,7 @@ typedef struct utimbuf utimbuf_s;
 typedef FILE file_t;
 typedef struct dirent dirent_s;
 typedef DIR dir_s;
-typedef TAR tar_t;
+//typedef TAR tar_t;
 
 #define __file_close __cleanup(file_close_auto)
 
@@ -321,7 +321,7 @@ err_t fgz_extract(int fdout, int fdin);
  * @param mode only support r, w is a to do
  * @return NULL for error or tar object
  */
-tar_t* ftar_open(const char* path, int orfd, const char* mode);
+//tar_t* ftar_open(const char* path, int orfd, const char* mode);
 
 /** reading a tar, 1 have read 0 no more data to read*/
 #define ftar_read(T) th_read(T)
@@ -332,7 +332,7 @@ tar_t* ftar_open(const char* path, int orfd, const char* mode);
 /** cleanup function
  * @see __cleanup
  */
-void ftar_close_auto(tar_t** tar);
+//void ftar_close_auto(tar_t** tar);
 
 /** cleanup function
  * @see __cleanup
@@ -359,7 +359,7 @@ void ftar_close_auto(tar_t** tar);
  * @param fdout where write file
  * @return 0 successfull -1 error
  */
-err_t ftar_extract_reg(tar_t* tar, int fdout);
+//err_t ftar_extract_reg(tar_t* tar, int fdout);
 
 /****************/
 /*** stream.c ***/
