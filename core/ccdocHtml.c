@@ -430,7 +430,6 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 			dbg_info("DC_ESCAPE");
 			++parse;
 			ds_push(&desc, *parse++);
-			//ds_push(&desc, *parse++);
 		}
 		else if ( !incode ){
 			//dbg_info("CHAR:%c", *parse);

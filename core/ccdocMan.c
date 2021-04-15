@@ -272,11 +272,8 @@ __private void desc_parse(char** page, ccdoc_s* ccdoc, substr_s* desc, celement_
 			dbg_info("DC_ESCAPE");
 			++parse;
 			if( *parse == 'n' ){
+				++parse;
 				ds_push(page, '\n');
-			}
-			else if( *parse == '\\' ) {
-				ds_push(page, *parse++);
-				ds_push(page, *parse++);
 			}
 			else{
 				ds_push(page, *parse++);

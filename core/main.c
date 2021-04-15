@@ -142,7 +142,7 @@
  * @^2 'Descript Command'
  * In addition on the basic command ccdoc export description command, description command is special command for writing best description.\n
  * all descript command start with \@, only new line you can write with \\n.
-
+ *
  * @^3 'Command Arguments'
  * if you writing cli command probably you want generate usage documentation, is very simple with @i'command arguments'
  * the format begin with \@| and next usage can add with |\n
@@ -162,28 +162,83 @@
  * @}
  *
  * @^3 'Return'
- * \@<
+ * The return command, \@< , accept one quoted argument than descript return comment\n
+ * examples:
+ * @{
+ * @C- examples
+ * * @< '0 success, -1 on error'
+ * @c
+ * int test(void);
+ * @}
  *
  * @^3 'Argument'
- * \@>N
+ * The argument command, \@> , descript function or macro argument.\n
+ * Accept one number with no space refered to function argument and a description to argument quoted.\n
+ * The first argument is 0, it's write undocumented if one argument is not descript\n
+ * examples:
+ * @{
+ * @C- examples
+ * * @>0 'first arg'
+ * * @>1 'second arg'
+ * @c
+ * void foo(int bar, int cat);
+ * @}
  *
  * @^3 'Reference'
- * \@*
+ * Reference command, \@* , add link or expand string.\n
+ * name of reference can be quoted, if have a space, or no.\n
+ * examples:
+ * @{
+ * @C-file 'my files' reference examples@c
+ * @C-visual index@c
+ * @C-str 'hello' 'hello world'@c
+ * @C- foo descript in @*'my files'
+ * * @< @*hello
+ * @c
+ * char* foo(void);
+ * @}
  *
  * @^3 'Title'
- * \@^
+ * Command title, \@^ , add subtitle on current section.\n
+ * accept numbers witout space indicating importance, 1 very important 1+N little important, the title name is quoted string.\n
+ * examples:
+ * @{
+ * @C-file 'test'
+ * descript a file
+ * @^2 'subtitle'
+ * this is subsection
+ * @c
+ * @}
  *
  * @^3 'Code'
- * \@{ \@}
+ * Command code start with, \@{ , and end with, \@}, and mark comment as code.\n
+ * in the code the comment is not touch and only escape available is Escape Comment descript in Escape section.\n
+ * for now is not possible to write examples. code section cant escape command code, see main.c for code command examples
  *
  * @^3 'Link'
- * \@?
+ * command link, \@? , creating manual link, accept quoted visible name and quoted link.\n
+ * examples:
+ * @{
+ * @C-file 'test' create link @? 'localhost' 'http://127.0.0.1'@c
+ * @}
  *
  * @^3 'Text Attribute'
- * \@b \@i \@s
+ * in descript can add text attribute, text attribute is a command with quoted string separated or no with space.\n
+ * bold \@b\n
+ * italic \@i\n
+ * strike \@s\n
+ * examples:
+ * @{
+ * @C-file 'test' @b'bold' @i 'italic' @s'strike'@c
+ * @}
  *
  * @^3 'Escape'
- * \@C \@c \\
+ * for writing some special characters need to escape this.\n
+ * \\ is used to escape
+ * \\n for writing new line
+ * \\\@ for writing \@
+ * \@C writing @C, only this and \@c works in code command, in this mode not get error on compiler.
+ * \@c writing @c
 */
 
 /*-visual side*/

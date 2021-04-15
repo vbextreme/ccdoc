@@ -425,49 +425,117 @@ examples:
 <h3 id="Return" class="w3-text-blue-grey">
 Return</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@<
+The return command, @< , accept one quoted argument than descript return comment</br>
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*- examples</br>* @&lt; '0 success, -1 on error'</br>*/</br>int test(void);</br></pre>
+	</div>
+</div>
+
 
 </p>
 <h3 id="Argument" class="w3-text-blue-grey">
 Argument</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@>N
+The argument command, @> , descript function or macro argument.</br>
+Accept one number with no space refered to function argument and a description to argument quoted.</br>
+The first argument is 0, it's write undocumented if one argument is not descript</br>
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*- examples</br>* @&gt;0 'first arg'</br>* @&gt;1 'second arg'</br>*/</br>void foo(int bar, int cat);</br></pre>
+	</div>
+</div>
+
 
 </p>
 <h3 id="Reference" class="w3-text-blue-grey">
 Reference</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@*
+Reference command, @* , add link or expand string.</br>
+name of reference can be quoted, if have a space, or no.</br>
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'my files' reference examples*/</br>/*-visual index*/</br>/*-str 'hello' 'hello world'*/</br>/*- foo descript in @*'my files'</br>* @&lt; @*hello</br>*/</br>char* foo(void);</br></pre>
+	</div>
+</div>
+
 
 </p>
 <h3 id="Title" class="w3-text-blue-grey">
 Title</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@^
+Command title, @^ , add subtitle on current section.</br>
+accept numbers witout space indicating importance, 1 very important 1+N little important, the title name is quoted string.</br>
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test'</br>descript a file</br>@^2 'subtitle'</br>this is subsection</br>*/</br></pre>
+	</div>
+</div>
+
 
 </p>
 <h3 id="Code" class="w3-text-blue-grey">
 Code</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@{ @}
+Command code start with, @{ , and end with, @}, and mark comment as code.</br>
+in the code the comment is not touch and only escape available is Escape Comment descript in Escape section.</br>
+for now is not possible to write examples. code section cant escape command code, see main.c for code command examples
 
 </p>
 <h3 id="Link" class="w3-text-blue-grey">
 Link</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@?
+command link, @? , creating manual link, accept quoted visible name and quoted link.</br>
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test' create link @? 'localhost' 'http://127.0.0.1'*/</br></pre>
+	</div>
+</div>
+
 
 </p>
 <h3 id="Text Attribute" class="w3-text-blue-grey">
 Text Attribute</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@b @i @s
+in descript can add text attribute, text attribute is a command with quoted string separated or no with space.</br>
+bold @b</br>
+italic @i</br>
+strike @s</br>
+examples:
+<div class="w3-card w3-round w3-theme-l3">
+	<div class="w3-container w3-theme-l4">Code:</div>
+	<div class="w3-container w3-scroll">
+		<pre>
+</br>/*-file 'test' @b'bold' @i 'italic' @s'strike'*/</br></pre>
+	</div>
+</div>
+
 
 </p>
 <h3 id="Escape" class="w3-text-blue-grey">
 Escape</h3>
 <p class="w3-leftbar" style="padding-left:10px">
-@C @c \
+for writing some special characters need to escape this.</br>
+\ is used to escape
+\n for writing new line
+\@ for writing @
+@C writing /*, only this and @c works in code command, in this mode not get error on compiler.
+@c writing */
 </p>
 
 </div>
