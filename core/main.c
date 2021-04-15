@@ -63,8 +63,9 @@
  * read @*'Comment Command' for more details
  *
  * @^2 'News'
- * @b'0.1'  ready, html,README,wiki,man\n
- * @b'0.0'  begin\n
+ * @b'1.0.0' first release\n
+ * @b'0.1'   ready, html,README,wiki,man\n
+ * @b'0.0'   begin\n
  *
 */
 

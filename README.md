@@ -102,8 +102,10 @@ read [Comment Command](https://github.com/vbextreme/ccdoc/wiki/Comment%20Command
 
 
 ## News
-**0.1**  ready, html,README,wiki,man<br />
+**1.0.0** first release<br />
 
-**0.0**  begin<br />
+**0.1**   ready, html,README,wiki,man<br />
+
+**0.0**   begin<br />
 
 
