@@ -234,11 +234,11 @@
  *
  * @^3 'Escape'
  * for writing some special characters need to escape this.\n
- * \\ is used to escape
- * \\n for writing new line
- * \\\@ for writing \@
- * \@C writing @C, only this and \@c works in code command, in this mode not get error on compiler.
- * \@c writing @c
+ * \\ is used to escape\n
+ * \\n for writing new line\n
+ * \\\@ for writing \@\n
+ * \@C writing @C, only this and \@c works in code command, in this mode not get error on compiler.\n
+ * \@c writing @c\n
 */
 
 /*-visual side*/
