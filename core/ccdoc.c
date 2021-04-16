@@ -1,6 +1,78 @@
 #include <ccdoc.h>
+#include <stdarg.h>
 
 __private substr_s SSNULL;
+
+__private int linen(const char* data, const char* parse){
+	int linen=1;
+	while( *(data=str_chr(data, '\n')) && data < parse ){
+		++linen;
+		++data;
+	}
+	return linen;
+}
+
+__private const char* chnsl(int* n, const char* data, const char* parse){
+	const char* sl = parse;
+	while( sl > data && *sl != '\n' ) --sl;
+	if( *sl != '\n' ){
+		//defensive
+		sl = data;
+	}
+	else{
+		++sl;
+	}
+	*n = parse - sl;
+	return sl;
+}
+
+__private void ccdoc_vdie(const char* file, const char* code, const char* begin, const char* format, va_list varg){
+	fputs( DBG_COLOR_ERROR "die ", stderr);
+	if( file ){
+		fprintf(stderr, DBG_COLOR_INFO "on parsing file:'%s' ", file);
+	}
+	fputs("" DBG_COLOR_RESET, stderr);
+	vfprintf(stderr, format, varg);
+
+	if( code && begin ){
+		int line = linen(code, begin);
+		int ch;
+	 	const char* sl = chnsl(&ch,code, begin);
+		fprintf(stderr, DBG_COLOR_INFO " at line:%d" DBG_COLOR_RESET "\n",	line);
+		while( *sl && *sl != '\n' ){
+			fputc(*sl++, stderr);
+		}
+		fputc('\n', stderr);
+		while( ch-->0 ){
+			fputc(' ', stderr);
+		}
+		fputs(DBG_COLOR_INFO "^" DBG_COLOR_RESET, stderr);
+	}
+
+	fputc('\n', stderr);
+	exit(1);
+}
+
+__printf(3,4)
+__private void ccdoc_die(ccfile_s* cf, const char* begin, const char* f, ...){
+	va_list varg;
+	va_start(varg, f);
+	if( cf ){
+		ccdoc_vdie(cf->path, cf->code, begin, f, varg);
+	}
+	else{
+		ccdoc_vdie(NULL, NULL, begin, f, varg);
+	}
+	va_end(varg);
+}
+
+__printf(4,5)
+__private void ccdoc_diefc(const char* file, const char* code, const char* begin, const char* f, ...){
+	va_list varg;
+	va_start(varg, f);
+	ccdoc_vdie(file, code, begin, f, varg);
+	va_end(varg);
+}
 
 __private const char* ccdoc_code_load(ccdoc_s* ccdoc, const char* file){
 	__fd_close int fd = fd_open(file, "r", 0);
@@ -14,6 +86,7 @@ __private const char* ccdoc_code_load(ccdoc_s* ccdoc, const char* file){
 
 ccdoc_s* ccdoc_new(const char* fpath){
 	ccdoc_s* ccdoc = NEW(ccdoc_s);
+	ccdoc->fsel = NULL;
 	mem_link(ccdoc, (ccdoc->vfiles = vector_new(ccfile_s, CCDOC_VFILES)));
 	mem_link(ccdoc, (ccdoc->vcode  = vector_new(const char*, CCDOC_VCODE)));
 	mem_link(ccdoc, (ccdoc->refs = rbhash_new(CCDOC_HASH_BEGIN, CCDOC_HASH_MIN, CCDOC_REF_KEYSIZE, CCDOC_HASH_HASH)));
@@ -31,45 +104,42 @@ __private void ccdoc_ref_new(ccdoc_s* ccdoc, reftype_e type, substr_s* name, sub
 	ref->value = *val;
 	ref->data  = data;
 	if( rbhash_add_unique(ccdoc->refs, ref->name.begin, substr_len(&ref->name), ref) ){
-		die("reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
+		ccdoc_die(ccdoc->fsel, ref->name.begin, "reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
 	}
 }
 
 void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 	const char* code = ccdoc_code_load(ccdoc, file);
-	dbg_info("loaded code:%s", code);
+	const char* startcode = code;
 	substr_s command;
+	ccdoc->fsel = NULL;
+	const char* errbg = code;
 	code = cparse_comment_command(&command, code);
-	dbg_info("comment command:%.*s", substr_format(&command));
 	do{
 		cmdtype_e cmdtype;
+		errbg = command.begin;
 		command.begin = ccparse_type(&cmdtype, command.begin);
 		switch( cmdtype ){
-			case CC_NULL: 
-				dbg_info("command type null");	
-			break;
 			
 			case CC_REF:{
-				dbg_info("command type ref");
 				ref_s* ref = NEW(ref_s);
 				mem_zero(ref);
 				mem_link(ccdoc->refs, ref);
 				ccparse_ref(ref, &command);
 				if( rbhash_add_unique(ccdoc->refs, ref->name.begin, substr_len(&ref->name), ref) ){
-					die("reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
+					ccdoc_die(ccdoc->fsel, ref->name.begin, "reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
 				}
 				break;
 			}
 			break;
 			
 			case CC_STR:{
-				dbg_info("command type str");
 				ref_s* ref = NEW(ref_s);
 				mem_zero(ref);
 				mem_link(ccdoc->refs, ref);
 				ccparse_str(ref, &command);
 				if( rbhash_add_unique(ccdoc->refs, ref->name.begin, substr_len(&ref->name), ref) ){
-					die("reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
+					ccdoc_die(ccdoc->fsel, ref->name.begin, "reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
 				}
 				break;
 			}
@@ -77,6 +147,8 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 			case CC_FILE:{
 				dbg_info("command type file");
 				ccfile_s* cf = vector_push_ref(ccdoc->vfiles);
+				mem_link(ccdoc, (cf->path = ds_dup(file, 0)));
+				cf->code = startcode;
 				cf->desc.begin = cf->desc.end = cf->name.begin = cf->name.end = NULL;
 				cf->visual = VISUAL_SIDE;
 				mem_link(ccdoc, (cf->vdefs = vector_new(ccdef_s, CCDOC_VDEF)));
@@ -91,22 +163,30 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 				substr_s fname;
 				ccparse_sel(&fname, &command);
 				ref_s* ref = rbhash_find(ccdoc->refs, fname.begin, substr_len(&fname));
-				if( !ref ) die("file '%.*s' not exists",  (int)substr_len(&fname), fname.begin);
-				if( ref->type != REF_FILE ) die("you can select only a file");
+				if( !ref ){
+					ccdoc_die(ccdoc->fsel, fname.begin, "-file '%.*s', not exists", (int)substr_len(&fname), fname.begin);
+				}
+				if( ref->type != REF_FILE ){
+					ccdoc_die(ccdoc->fsel, fname.begin, "-file '%.*s', is not a reference", (int)substr_len(&fname), fname.begin);
+				}
 				ccdoc->fsel = ref->data;
 				break;
 			}
 	
 			case CC_VISUAL:{
 				dbg_info("command type visual");
-				if( !ccdoc->fsel ) die("no file select");
+				if( !ccdoc->fsel ){
+					ccdoc_diefc(file, startcode, errbg, "not selected any -file");
+				}
 				ccparse_visual(&ccdoc->fsel->visual, &command);
 				break;
 			}
 
 			case CC_DEF:{
 				dbg_info("command type def");
-				if( !ccdoc->fsel ) die("no file select");
+				if( !ccdoc->fsel ){
+					ccdoc_diefc(file, startcode, errbg, "not selected any -file");
+				}
 				ccdef_s* ccd = vector_push_ref(ccdoc->fsel->vdefs);
 				memset(ccd, 0, sizeof(ccdef_s));
 				ccd->parent = ccdoc->fsel;
@@ -116,7 +196,14 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 				break;
 			}
 
-			default: case CC_COUNT: die("wrong command comment"); break;
+			default: case CC_COUNT: case CC_NULL: 
+				if( !ccdoc->fsel ){
+					ccdoc_diefc(file, startcode, errbg, "unknown comment command");
+				}
+				else{
+					ccdoc_die(ccdoc->fsel, errbg, "unknown comment command");
+				}
+			break;
 		}
 		code = cparse_comment_command(&command, code);
 		if( *code ) dbg_info("comment command:%.*s", substr_format(&command));
@@ -317,7 +404,7 @@ int ccdoc_project_info(char** version, int* typeEL, ccdoc_s* ccdoc){
 	const char* parse = data;
 
 	if( version ){
-		*version = NULL;
+		*version = ds_new(CCDOC_STRING_SIZE);
 		while( *(parse = str_find(parse, "version")) ){
 			parse += str_len("version");
 			parse = str_skip_hn(parse);

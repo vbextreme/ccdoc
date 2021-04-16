@@ -1,7 +1,7 @@
 ###########
 # project #
 ###########
-project('ccdoc', 'c', version: '1.0.0')
+project('ccdoc', 'c', version: '1.1.0')
 
 cc = meson.get_compiler('c')
 

@@ -43,12 +43,12 @@ __private void man_th(char** out, ccdoc_s* ccdoc, const char* title, size_t len,
 	int p = 0;
 	ds_cat(out, _TH, str_len(_TH));
 	ds_cat(out, title, len);
-	if( ccdoc_project_info(&v, &p, ccdoc) ){
+	if( !ccdoc_project_info(&v, &p, ccdoc) ){
+		dbg_info("project info version:%s type:%d", v, p);
 		if( page ) ds_sprintf(out, ds_len(*out), " %d\n", page);
 		else ds_push(out, '\n');
 		return;
 	}
-
 	page = p == 1 ? 1 : 3;
 	ds_sprintf(out, ds_len(*out), " %d \"%s\"\n", page, v ? v : "");
 }
@@ -365,7 +365,9 @@ void ccdoc_build_man(ccdoc_s* ccdoc, const char* destdir){
 			ds_dup(ccdoc->vfiles[i].name.begin, substr_len(&ccdoc->vfiles[i].name)) :
 			ds_printf("%.*s_%.*s", substr_format(&get_index(ccdoc)->name), substr_format(&ccdoc->vfiles[i].name))
 		;
+		dbg_info("man fname:%s", manfile);
 
+		dbg_info("man page");
 		__mem_free char* page = ccdoc_man_build_file(ccdoc, &ccdoc->vfiles[i], manfile);
 		dbg_info("save");
 		__mem_free char* fdest = ds_printf("%s/%s.%d", destdir, manfile, pn);

@@ -121,14 +121,11 @@ __private const char* cparse_macro(cdef_s* def, const char* code){
 			celement_s* ce = vector_push_ref(def->velement);
 			memset(ce, 0, sizeof(celement_s));
 			code = cparse_token_next(cparse_token(&ce->name, code));
-			dbg_info("macro.arg:%.*s", substr_format(&ce->name));
 			if(*code == _ARGS_NEXT) code = cparse_token_next(code+1);
 		}
 		if( *code ) ++code;
 	}
 	def->code.end = code;
-	dbg_info("macro:%.*s", substr_format(&def->name));
-	dbg_info("code:%.*s",  substr_format(&def->code));
 	return code;
 }
 
@@ -141,14 +138,10 @@ __private const char* cparse_type(cdef_s* def, const char* code){
 	}
 	
 	code = cparse_declar(&def->typedec, &def->name, code);
-	dbg_info("type declare:%.*s", substr_format(&def->typedec));
-	dbg_info("name declare:%.*s", substr_format(&def->name));
 
 	if( !*code || code[-1] == _ENDL){
 		def->type = C_TYPE;
 		def->code.end = code;
-		dbg_info("type:%.*s", substr_format(&def->name));
-		dbg_info("code:%.*s", substr_format(&def->code));
 		return code;
 	}
 

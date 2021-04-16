@@ -337,7 +337,7 @@ fconfig_t* fconfig_load(const char* file, size_t maxVarLen){
 	mem_link(fc, fc->var);	
 
 	__fd_close int fd = fd_open(file, "r", 0);
-	if( !fd ){
+	if( fd == -1 ){
 		fc->error = str_printf("error on open file '%s': %s\n", file, str_errno());
 		mem_link(fc, fc->error);
 		return fc;

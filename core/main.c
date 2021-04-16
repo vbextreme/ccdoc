@@ -63,6 +63,8 @@
  * read @*'Comment Command' for more details
  *
  * @^2 'News'
+ * @b'1.1.0' fix err fd, fix reading meson version, begin to show error on error\n
+ * @b'1.0.2' fix build\n
  * @b'1.0.0' first release\n
  * @b'0.1'   ready, html,README,wiki,man\n
  * @b'0.0'   begin\n
@@ -256,12 +258,10 @@ __private argdef_s args[] = {
 };
 
 void conf_set(fconfig_t* fc, const char* name, size_t len, const char* value, int path){
-	dbg_info("%.*s ? %s :: %d", (int)len, name, value, path);
 	fconfigVar_s* var = fconfig_get(fc, name, len );
 	if( var ){
 		if( var->type != FCVAR_STR ) die("wrong var %s type", name);
 		if( path ){
-			dbg_info("resolve(%p):%s", var->fcstr, var->fcstr);
 			char* tmp = var->fcstr;
 			var->fcstr = path_resolve(tmp);
 			mem_link(var, var->fcstr);
@@ -339,17 +339,19 @@ int main(int argc, char** argv){
 	}
 
 	if( fconfig_get(ccdoc->fc, CCDOC_CONF_WIKI, str_len(CCDOC_CONF_WIKI)) ){
+		dbg_info("WIKI");
 		ccdoc_build_wiki(ccdoc,
 			fconfig_get(ccdoc->fc, CCDOC_CONF_DESTDIR_WIKI, str_len(CCDOC_CONF_DESTDIR_WIKI))->fcstr
 		);
 	}
 
 	if( fconfig_get(ccdoc->fc, CCDOC_CONF_MAN, str_len(CCDOC_CONF_MAN)) ){
+		dbg_info("MAN");
 		ccdoc_build_man(ccdoc,
 			fconfig_get(ccdoc->fc, CCDOC_CONF_DESTDIR_MAN, str_len(CCDOC_CONF_DESTDIR_MAN))->fcstr
 		);
 	}
-
+	dbg_info("end");
 	return 0;
 }
 

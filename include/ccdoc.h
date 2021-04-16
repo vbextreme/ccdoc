@@ -131,6 +131,8 @@ typedef struct ccdef{
 typedef enum{VISUAL_NONE, VISUAL_TOP, VISUAL_SIDE, VISUAL_INDEX, VISUAL_COUNT}visual_e;
 
 typedef struct ccfile{
+	char* path;
+	const char* code;
 	substr_s name;
 	substr_s desc;
 	visual_e    visual;

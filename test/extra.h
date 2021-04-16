@@ -1,3 +1,4 @@
+
 /*-file 'extra' simple file without code \n
  * build command
  * @{
@@ -7,3 +8,4 @@
  * @| a 'aaa' 0 'aaa.command'
  * | b 'bbb' 1 'bbb command descriptionskxzkjxhjx'
  */
+

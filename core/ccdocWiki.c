@@ -19,7 +19,7 @@ __private void build_md_sidebar(ccdoc_s* ccdoc, const char* destdir){
 		ds_sprintf(&side, ds_len(side), "* [%.*s](%s/%s)\n", substr_format(&ccdoc->vfiles[i].name), wikiSite->fcstr, lk);
 	}
 
-	dbg_info("save");
+	dbg_info("save sidebar");
 	__mem_free char* fdest = ds_printf("%s/%s.md", destdir, _SIDEBAR);
 	__fd_close int fd = fd_open(fdest, "w", CCDOC_FILE_PRIV);
 	if( fd < 0 ) die("error on open file %s :: %s", fdest, str_errno());
