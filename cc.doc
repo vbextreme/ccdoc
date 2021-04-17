@@ -1,13 +1,15 @@
 destdir_html   = ./doc/html
-destdir_readme = ./doc/md
-destdir_wiki   = ./doc/wiki
+destdir_readme = ./
+destdir_wiki   = ./ccdoc.wiki
+destdir_man    = ./doc/man
+meson_path     = ./meson.build
 template_html  = ./template/template.html
 template_css   = ./template
 wiki_site      = https://github.com/vbextreme/ccdoc/wiki
 src            = [ ./core/main.c, ./ef/config.c ]
-dump
+//dump
 html
 css
 readme
 wiki
- 
+man
