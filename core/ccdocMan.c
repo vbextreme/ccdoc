@@ -84,7 +84,7 @@ __private void man_attribute(char** out, int type, substr_s* txt){
 		case 0: ds_sprintf(out, ds_len(*out), ".B %.*s\n", substr_format(txt)); break;
 		case 1: ds_sprintf(out, ds_len(*out), ".I %.*s\n", substr_format(txt)); break;
 		case 2: ds_sprintf(out, ds_len(*out), "%.*s", substr_format(txt)); break;
-		default: die("unknown format");
+		default: die("internal error: unknown format");
 	}
 }
 
@@ -108,7 +108,7 @@ __private void man_link(char** page, ccdoc_s* ccdoc,  substr_s* name){
 
 __private void man_push_ref(char** page, ref_s* ref, void* ctx){
 	switch( ref->type ){
-		default: case REF_REF: die("wrong ref"); break;
+		default: case REF_REF: die("internal error: wrong ref"); break;
 		case REF_FILE:{
 			ccfile_s* f = ref->data;
 			man_link(page, ctx, &f->name);
@@ -259,7 +259,7 @@ __private void desc_parse(ccfile_s* cf, char** page, ccdoc_s* ccdoc, substr_s* d
 					ds_cat(page, "*/", 0);
 				break;
 
-				default: die("unknown command desc @%c", *parse); break;
+				default: ccdoc_die(cf, parse, "unknown command desc"); break;
 			}
 		}
 		else if( incode && *parse == CCDOC_DESC_COMMAND && *(parse+1) == CCDOC_DC_CODE_E ){
