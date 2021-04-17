@@ -125,7 +125,7 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 				ref_s* ref = NEW(ref_s);
 				mem_zero(ref);
 				mem_link(ccdoc->refs, ref);
-				ccparse_ref(ref, &command);
+				ccparse_ref(ccdoc->fsel, ref, &command);
 				if( rbhash_add_unique(ccdoc->refs, ref->name.begin, substr_len(&ref->name), ref) ){
 					ccdoc_die(ccdoc->fsel, ref->name.begin, "reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
 				}
@@ -137,7 +137,7 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 				ref_s* ref = NEW(ref_s);
 				mem_zero(ref);
 				mem_link(ccdoc->refs, ref);
-				ccparse_str(ref, &command);
+				ccparse_str(ccdoc->fsel, ref, &command);
 				if( rbhash_add_unique(ccdoc->refs, ref->name.begin, substr_len(&ref->name), ref) ){
 					ccdoc_die(ccdoc->fsel, ref->name.begin, "reference '%.*s', already exists", (int)substr_len(&ref->name), ref->name.begin);
 				}
@@ -161,7 +161,7 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 			case CC_SEL:{
 				dbg_info("command type sel");
 				substr_s fname;
-				ccparse_sel(&fname, &command);
+				ccparse_sel(ccdoc->fsel, &fname, &command);
 				ref_s* ref = rbhash_find(ccdoc->refs, fname.begin, substr_len(&fname));
 				if( !ref ){
 					ccdoc_die(ccdoc->fsel, fname.begin, "-file '%.*s', not exists", (int)substr_len(&fname), fname.begin);
@@ -178,7 +178,7 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 				if( !ccdoc->fsel ){
 					ccdoc_diefc(file, startcode, errbg, "not selected any -file");
 				}
-				ccparse_visual(&ccdoc->fsel->visual, &command);
+				ccparse_visual(ccdoc->fsel, &ccdoc->fsel->visual, &command);
 				break;
 			}
 
@@ -227,30 +227,30 @@ void ccdoc_copy_css(const char* destdir, const char* srcdir){
 	}
 }
 
-void ccdoc_parse_ret(const char** parse, substr_s* desc){
+void ccdoc_parse_ret(ccfile_s* cf, const char** parse, substr_s* desc){
 	*parse = str_skip_hn(*parse);
-	*parse = ccparse_string(desc, *parse);
+	*parse = ccparse_string(cf, desc, *parse);
 	if( !**parse ) die("wrong return command desc"); 
 	*parse = ccparse_skip_hn(*parse);
 }
 
-void ccdoc_parse_arg(const char** pparse, int* argid, substr_s* desc){
+void ccdoc_parse_arg(ccfile_s* cf, const char** pparse, int* argid, substr_s* desc){
 	const char* parse = *pparse;
 	*argid = strtol(parse, (char**)&parse, 10);
 	if( !parse || !*parse ) die("wrong arg command desc");
-	parse = ccparse_string(desc, str_skip_hn(parse));
+	parse = ccparse_string(cf, desc, str_skip_hn(parse));
 	*pparse = ccparse_skip_hn(parse);
 }
 
-void ccdoc_parse_title(const char** pparse, int* id, substr_s* title){
+void ccdoc_parse_title(ccfile_s* cf, const char** pparse, int* id, substr_s* title){
 	const char* parse = *pparse;
 	*id = strtol(parse, (char**)&parse, 10);
 	if( !parse || !*parse ) die("wrong arg command title");
-	parse = ccparse_string(title, str_skip_hn(parse));
+	parse = ccparse_string(cf, title, str_skip_hn(parse));
 	*pparse = ccparse_skip_hn(parse);
 }
 
-int ccdoc_parse_cmdarg(const char** pparse, char* argsh, substr_s* argln, int* argrq, substr_s* desc){
+int ccdoc_parse_cmdarg(ccfile_s* cf, const char** pparse, char* argsh, substr_s* argln, int* argrq, substr_s* desc){
 	const char* parse = *pparse;
 	parse = ccparse_skip_hn(parse);
 	if( *parse != '|' ){
@@ -259,20 +259,20 @@ int ccdoc_parse_cmdarg(const char** pparse, char* argsh, substr_s* argln, int* a
 	}
 	parse = ccparse_skip_hn(parse+1);
 	*argsh = *parse;
-	parse = ccparse_string(argln, ccparse_skip_hn(parse+1));
+	parse = ccparse_string(cf, argln, ccparse_skip_hn(parse+1));
 	*argrq = strtol(ccparse_skip_hn(parse), (char**)&parse, 10);
 	if( !*parse || (*parse != ' ' && *parse != '\'' && *parse != '\t' && *parse != '\n') ) die("wrong cli command arg");
-	*pparse = ccparse_string(desc, ccparse_skip_hn(parse+1));
+	*pparse = ccparse_string(cf, desc, ccparse_skip_hn(parse+1));
 	*pparse = ccparse_skip_hn(*pparse);
 	dbg_info("short:%c long:%.*s rq:%d desc:%.*s", *argsh, substr_format(argln), *argrq, substr_format(desc));
 	return 1;
 }
 
-void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*catref)(char** dst, ref_s* ref, void* ctx), void* ctx){
+void ccdoc_parse_ref(ccfile_s* cf, ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*catref)(char** dst, ref_s* ref, void* ctx), void* ctx){
 	const char* parse = *pparse;
 	substr_s refname;
 	if( *parse == '\'' ){
-		parse = ccparse_string(&refname, parse);
+		parse = ccparse_string(cf, &refname, parse);
 	}
 	else{
 		refname.begin = parse;
@@ -291,7 +291,7 @@ void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*ca
 	catref(dest, ref, ctx);
 }
 
-void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx){
+void ccdoc_cat_ref_resolver(ccfile_s* cf, char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx){
 	dbg_info("resolve:%.*s", (int)len, str);
 	size_t i = 0;
 	while( i < len ){
@@ -301,7 +301,7 @@ void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t
 		}
 		else if( str[i] == CCDOC_DESC_COMMAND && str[i+1] == CCDOC_DC_REF ){
 			const char* next = &str[i+2];
-			ccdoc_parse_ref(ccdoc, &next, dest, catref, ctx);
+			ccdoc_parse_ref(cf, ccdoc, &next, dest, catref, ctx);
 			i = next - str;
 		}
 		else{
@@ -311,14 +311,14 @@ void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t
 	}
 }
 
-void ccdoc_parse_link(const char** parse, substr_s* name, substr_s* link){
+void ccdoc_parse_link(ccfile_s* cf, const char** parse, substr_s* name, substr_s* link){
 	*parse = ccparse_skip_hn(*parse);
-	*parse = ccparse_string(name, *parse);
+	*parse = ccparse_string(cf, name, *parse);
 	*parse = ccparse_skip_hn(*parse);
-	*parse = ccparse_string(link, *parse);
+	*parse = ccparse_string(cf, link, *parse);
 }
 
-int ccdoc_parse_attribute(const char** parse, substr_s* txt){
+int ccdoc_parse_attribute(ccfile_s* cf, const char** parse, substr_s* txt){
 	int ret;
 	switch(**parse){
 		case CCDOC_DC_BOLD  : ret = 0; break;
@@ -327,20 +327,20 @@ int ccdoc_parse_attribute(const char** parse, substr_s* txt){
 		default: die("wrong ccdoc attribute");
 	} 
 	*parse = ccparse_skip_hn(*parse + 1);
-	*parse = ccparse_string(txt, *parse);
+	*parse = ccparse_string(cf, txt, *parse);
 	return ret;
 }
 
-void ccdoc_parse_skip_arg(const char** parse){
+void ccdoc_parse_skip_arg(ccfile_s* cf, const char** parse){
 	++(*parse);
 	strtol(*parse, (char**)parse, 10);
 	if( !parse || !*parse ) die("wrong arg command desc");
 	substr_s tmp;
-	*parse = ccparse_string(&tmp, str_skip_hn(*parse));
+	*parse = ccparse_string(cf, &tmp, str_skip_hn(*parse));
 	*parse = ccparse_skip_hn(*parse);
 }
 
-substr_s* ccdoc_parse_args(substr_s* desc, size_t count){
+substr_s* ccdoc_parse_args(ccfile_s* cf, substr_s* desc, size_t count){
 	substr_s* vsub = vector_new(substr_s, count+1);
 	for( size_t i = 0; i < count; ++i){
 		substr_s null = {.begin = NULL, .end = NULL};
@@ -356,7 +356,7 @@ substr_s* ccdoc_parse_args(substr_s* desc, size_t count){
 		int argid = strtol(parse, (char**)&parse, 10);
 		if( !parse || !*parse ) die("wrong arg command desc");
 		if( argid >= (int)count ) die("function accept %lu arguments", count);
-		parse = ccparse_string(&vsub[argid], str_skip_hn(parse));
+		parse = ccparse_string(cf, &vsub[argid], str_skip_hn(parse));
 		parse = ccparse_skip_hn(parse);
 	}
 

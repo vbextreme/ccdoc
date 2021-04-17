@@ -279,7 +279,7 @@ __private void html_push_ref(char** dest, ref_s* ref, void* ctx){
 
 }
 
-__private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const char* title, size_t lenT, substr_s* rawdesc, celement_s* ret, celement_s* vargs){
+__private char* desc_parse(ccfile_s* cf, ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const char* title, size_t lenT, substr_s* rawdesc, celement_s* ret, celement_s* vargs){
 	char* desc = ds_new(CCDOC_STRING_SIZE);
 	if( title ){
 		substr_s sh1 = { .begin = title, .end = title+lenT };
@@ -329,7 +329,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					dbg_info("DC_RET");
 					++parse;
 					substr_s retdesc;
-					ccdoc_parse_ret(&parse, &retdesc);
+					ccdoc_parse_ret(cf, &parse, &retdesc);
 					ds_cat(&retd, retdesc.begin, substr_len(&retdesc));
 					break;
 				}
@@ -339,7 +339,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					++parse;
 					substr_s argdesc;
 					int argid;
-					ccdoc_parse_arg(&parse, &argid, &argdesc); 
+					ccdoc_parse_arg(cf, &parse, &argid, &argdesc); 
 					if( !vargs ) die("cparse fail reading args");
 					if( argid >= (ssize_t)vector_count(vargd) ) die("argument not exists");
 					ds_cat(&vargd[argid], argdesc.begin, substr_len(&argdesc));
@@ -351,7 +351,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					++parse;
 					int titleid;
 					substr_s t;
-					ccdoc_parse_title(&parse, &titleid, &t);
+					ccdoc_parse_title(cf, &parse, &titleid, &t);
 					__mem_free char* titlee = title_element(html, titleid, &t, &t);
 					ds_cat(&desc, html->tdef[I_TEXT_END].begin, substr_len(&html->tdef[I_TEXT_END]));
 					ds_cat(&desc, titlee, ds_len(titlee));
@@ -375,9 +375,9 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					int argrq;
 					substr_s argdesc;
 					ds_cat(&desc, html->tdef[I_CMDARGS_BEGIN].begin, substr_len(&html->tdef[I_CMDARGS_BEGIN]));
-					while( ccdoc_parse_cmdarg(&parse, &argsh, &argln, &argrq, &argdesc) ){
+					while( ccdoc_parse_cmdarg(cf, &parse, &argsh, &argln, &argrq, &argdesc) ){
 						__mem_free char* cmda = cmdarg_element(html, argsh, &argln, argrq, &argdesc);
-						ccdoc_cat_ref_resolver(&desc, ccdoc, cmda, ds_len(cmda), html_push_ref, html);
+						ccdoc_cat_ref_resolver(cf, &desc, ccdoc, cmda, ds_len(cmda), html_push_ref, html);
 					}
 					ds_cat(&desc, html->tdef[I_CMDARGS_END].begin, substr_len(&html->tdef[I_CMDARGS_END]));
 					break;
@@ -387,7 +387,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 					dbg_info("DC_LINK");
 					++parse;
 					substr_s name, link;
-					ccdoc_parse_link(&parse, &name, &link);
+					ccdoc_parse_link(cf, &parse, &name, &link);
 					__mem_free char* lk = link_element(html, &link, &name);	
 					ds_cat(&desc, lk, ds_len(lk));	
 					break;
@@ -396,7 +396,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 				case CCDOC_DC_BOLD: case CCDOC_DC_ITALIC: case CCDOC_DC_STRIKE:{
 					dbg_info("DC_ATTRIBUTE");
 					substr_s txt;
-					int att = ccdoc_parse_attribute(&parse, &txt);
+					int att = ccdoc_parse_attribute(cf, &parse, &txt);
 					html_bis(&desc, html, &txt, att);
 					break;
 				}
@@ -404,7 +404,7 @@ __private char* desc_parse(ccdoc_s* ccdoc, ccdocHTML_s* html, int tid, const cha
 				case CCDOC_DC_REF:
 					dbg_info("DC_REF");
 					++parse;
-					ccdoc_parse_ref(ccdoc, &parse, &desc, html_push_ref, html);
+					ccdoc_parse_ref(cf, ccdoc, &parse, &desc, html_push_ref, html);
 				break;
 			
 				case CCDOC_DC_OPENC:
@@ -503,7 +503,7 @@ __private char* html_code(ccdocHTML_s* html, substr_s* code){
 __private char* html_section_h(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s* file){
 	char* sec = ds_dup(html->tdef[I_SECTION].begin, substr_len(&html->tdef[I_SECTION]));
 	__mem_free char* sm = ds_dup(html->tdef[I_SECTION_MAIN].begin, substr_len(&html->tdef[I_SECTION_MAIN]));
-	__mem_free char* desc  = desc_parse(ccdoc, html, CCDOC_SECTION_HID, file->name.begin, substr_len(&file->name), &file->desc, NULL, NULL);
+	__mem_free char* desc  = desc_parse(file, ccdoc, html, CCDOC_SECTION_HID, file->name.begin, substr_len(&file->name), &file->desc, NULL, NULL);
 	ds_replace(&sm, S_CONTENT, desc, ds_len(desc));
 	ds_replace(&sec, S_CONTENT, sm, ds_len(sm));
 	return sec;
@@ -512,13 +512,13 @@ __private char* html_section_h(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s* file
 __private char* html_section_c(ccdoc_s* ccdoc, ccdocHTML_s* html, ccfile_s* file, template_e stitle, template_e sdesc, ctype_e type ){
 	char* sec = ds_dup(html->tdef[I_SECTION].begin, substr_len(&html->tdef[I_SECTION]));
 	__mem_free char* sm = ds_dup(html->tdef[I_SECTION_MAIN].begin, substr_len(&html->tdef[I_SECTION_MAIN]));
-	__mem_free char* desc  = desc_parse(ccdoc, html, CCDOC_SECTION_HID, html->tdef[stitle].begin, substr_len(&html->tdef[stitle]), &html->tdef[sdesc], NULL, NULL);
+	__mem_free char* desc  = desc_parse(file, ccdoc, html, CCDOC_SECTION_HID, html->tdef[stitle].begin, substr_len(&html->tdef[stitle]), &html->tdef[sdesc], NULL, NULL);
 	int count = 0;
 
 	vector_foreach(file->vdefs, i){
 		if( file->vdefs[i].def.type != type ) continue;
 		++count;
-		__mem_free char* d  = desc_parse(ccdoc, html, 
+		__mem_free char* d  = desc_parse(file, ccdoc, html, 
 			CCDOC_SUBSECTION_HID, file->vdefs[i].def.name.begin, substr_len(&file->vdefs[i].def.name), 
 			&file->vdefs[i].comment, 
 			&file->vdefs[i].def.ret, file->vdefs[i].def.velement

@@ -171,14 +171,14 @@ const char* cparse_comment_command(substr_s* out, const char* code);
 const char* cparse_definition_get(ccfile_s* cf, cdef_s* def, const char* code);
 
 const char* ccparse_skip_hn(const char* code);
-const char* ccparse_string(substr_s* out, const char* comment);
+const char* ccparse_string(ccfile_s* cf, substr_s* out, const char* comment);
 char* ccparse_remove_comment_command(substr_s* scode);
 const char* ccparse_type(cmdtype_e* out, const char* commentStart);
-void ccparse_ref(ref_s* ref, substr_s* comment);
-void ccparse_str(ref_s* ref, substr_s* comment);
+void ccparse_ref(ccfile_s* cf, ref_s* ref, substr_s* comment);
+void ccparse_str(ccfile_s* cf, ref_s* ref, substr_s* comment);
 void ccparse_file(ccfile_s* file, substr_s* comment);
-void ccparse_sel(substr_s* out, substr_s* comment);
-void ccparse_visual(visual_e* out, substr_s* comment);
+void ccparse_sel(ccfile_s* cf, substr_s* out, substr_s* comment);
+void ccparse_visual(ccfile_s* cf, visual_e* out, substr_s* comment);
 const char* ccparse_def(ccfile_s* cf, ccdef_s* def, substr_s* comment);
 
 __printf(4,5)
@@ -188,18 +188,20 @@ void ccdoc_die(ccfile_s* cf, const char* begin, const char* f, ...);
 ccdoc_s* ccdoc_new(const char* fpath);
 void ccdoc_load(ccdoc_s* ccdoc, const char* file);
 void ccdoc_copy_css(const char* destdir, const char* srcdir);
-void ccdoc_parse_ret(const char** parse, substr_s* desc);
-void ccdoc_parse_arg(const char** pparse, int* argid, substr_s* desc);
-void ccdoc_parse_title(const char** pparse, int* id, substr_s* title);
-int ccdoc_parse_cmdarg(const char** parse, char* argsh, substr_s* argln, int* argrq, substr_s* desc);
-void ccdoc_parse_ref(ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*catref)(char** dst, ref_s* ref, void* ctx), void* ctx);
-void ccdoc_cat_ref_resolver(char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx);
-void ccdoc_parse_link(const char** parse, substr_s* name, substr_s* link);
-int ccdoc_parse_attribute(const char** parse, substr_s* txt);
-void ccdoc_parse_skip_arg(const char** parse);
-substr_s* ccdoc_parse_args(substr_s* desc, size_t count);
-void ccdoc_dump(ccdoc_s* ccdoc);
+void ccdoc_parse_ret(ccfile_s* cf, const char** parse, substr_s* desc);
+void ccdoc_parse_arg(ccfile_s* cf, const char** pparse, int* argid, substr_s* desc);
+void ccdoc_parse_title(ccfile_s* cf, const char** pparse, int* id, substr_s* title);
+int ccdoc_parse_cmdarg(ccfile_s* cf, const char** parse, char* argsh, substr_s* argln, int* argrq, substr_s* desc);
+void ccdoc_parse_ref(ccfile_s* cf, ccdoc_s* ccdoc, const char** pparse, char** dest,  void(*catref)(char** dst, ref_s* ref, void* ctx), void* ctx);
+void ccdoc_cat_ref_resolver(ccfile_s* cf, char** dest, ccdoc_s* ccdoc, const char* str, size_t len, void(*catref)(char** dst,ref_s* ref, void* ctx), void* ctx);
+void ccdoc_parse_link(ccfile_s* cf, const char** parse, substr_s* name, substr_s* link);
+int ccdoc_parse_attribute(ccfile_s* cf, const char** parse, substr_s* txt);
+void ccdoc_parse_skip_arg(ccfile_s* cf, const char** parse);
+substr_s* ccdoc_parse_args(ccfile_s* cf, substr_s* desc, size_t count);
+
 int ccdoc_project_info(char** version, int* typeEL, ccdoc_s* ccdoc);
+
+void ccdoc_dump(ccdoc_s* ccdoc);
 
 void ccdoc_build_html(ccdoc_s* ccdoc, const char* htmlTemplate, const char* destdir);
 
