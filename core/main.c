@@ -63,7 +63,7 @@
  * read @*'Comment Command' for more details
  *
  * @^2 'News'
- * @b'1.2.0' show all error
+ * @b'1.2.0' show all error\n
  * @b'1.1.0' fix err fd, fix reading meson version, begin to show error on error\n
  * @b'1.0.2' fix build\n
  * @b'1.0.0' first release\n
