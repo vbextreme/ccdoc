@@ -227,17 +227,19 @@ void ccdoc_copy_css(const char* destdir, const char* srcdir){
 	}
 }
 
+//TODO CHECK FROM 
+
 void ccdoc_parse_ret(ccfile_s* cf, const char** parse, substr_s* desc){
 	*parse = str_skip_hn(*parse);
 	*parse = ccparse_string(cf, desc, *parse);
-	if( !**parse ) die("wrong return command desc"); 
+	if( !**parse ) die("wrong return command desc"); //this will never happen 
 	*parse = ccparse_skip_hn(*parse);
 }
 
 void ccdoc_parse_arg(ccfile_s* cf, const char** pparse, int* argid, substr_s* desc){
 	const char* parse = *pparse;
 	*argid = strtol(parse, (char**)&parse, 10);
-	if( !parse || !*parse ) die("wrong arg command desc");
+	if( !parse || !*parse || parse[-1] < '0' || parse[-1] > '9'  ) ccdoc_die(cf, *pparse, "wrong arg command desc, aspected numbers");
 	parse = ccparse_string(cf, desc, str_skip_hn(parse));
 	*pparse = ccparse_skip_hn(parse);
 }
@@ -245,7 +247,7 @@ void ccdoc_parse_arg(ccfile_s* cf, const char** pparse, int* argid, substr_s* de
 void ccdoc_parse_title(ccfile_s* cf, const char** pparse, int* id, substr_s* title){
 	const char* parse = *pparse;
 	*id = strtol(parse, (char**)&parse, 10);
-	if( !parse || !*parse ) die("wrong arg command title");
+	if( !parse || !*parse || parse[-1] < '0' || parse[-1] > '9'  ) ccdoc_die(cf, *pparse, "wrong arg command desc, aspected numbers");
 	parse = ccparse_string(cf, title, str_skip_hn(parse));
 	*pparse = ccparse_skip_hn(parse);
 }
@@ -261,7 +263,7 @@ int ccdoc_parse_cmdarg(ccfile_s* cf, const char** pparse, char* argsh, substr_s*
 	*argsh = *parse;
 	parse = ccparse_string(cf, argln, ccparse_skip_hn(parse+1));
 	*argrq = strtol(ccparse_skip_hn(parse), (char**)&parse, 10);
-	if( !*parse || (*parse != ' ' && *parse != '\'' && *parse != '\t' && *parse != '\n') ) die("wrong cli command arg");
+	if( !*parse || (*parse != ' ' && *parse != '\'' && *parse != '\t' && *parse != '\n') ) ccdoc_die(cf, parse, "wrong cli command arg");
 	*pparse = ccparse_string(cf, desc, ccparse_skip_hn(parse+1));
 	*pparse = ccparse_skip_hn(*pparse);
 	dbg_info("short:%c long:%.*s rq:%d desc:%.*s", *argsh, substr_format(argln), *argrq, substr_format(desc));
@@ -277,15 +279,15 @@ void ccdoc_parse_ref(ccfile_s* cf, ccdoc_s* ccdoc, const char** pparse, char** d
 	else{
 		refname.begin = parse;
 		parse = str_anyof(parse, " \t\n<@'\"");
-		if( !*parse ) die("wrong ref command");
+		if( !*parse ) ccdoc_die(cf, refname.begin, "wrong ref name");
 		refname.end = parse;
 	}
 	//parse = ccparse_skip_hn(parse);
 	ref_s* ref = rbhash_find(ccdoc->refs, refname.begin, substr_len(&refname));
-	if( !ref ) die("ref '%.*s' not exists", substr_format(&refname));
+	if( !ref ) ccdoc_die(cf, refname.begin, "ref '%.*s' not exists", substr_format(&refname));
 	while( ref->type == REF_REF ){
 		ref = rbhash_find(ccdoc->refs, ref->value.begin, substr_len(&ref->value));
-		if( !ref ) die("ref %.*s not exists", substr_format(&refname));
+		if( !ref ) ccdoc_die(cf, refname.begin, "ref '%.*s' not exists", substr_format(&refname));
 	}
 	*pparse = parse;
 	catref(dest, ref, ctx);
@@ -324,7 +326,7 @@ int ccdoc_parse_attribute(ccfile_s* cf, const char** parse, substr_s* txt){
 		case CCDOC_DC_BOLD  : ret = 0; break;
 		case CCDOC_DC_ITALIC: ret = 1; break;
 		case CCDOC_DC_STRIKE: ret = 2; break;
-		default: die("wrong ccdoc attribute");
+		default: die("internal error, wrong ccdoc attribute");
 	} 
 	*parse = ccparse_skip_hn(*parse + 1);
 	*parse = ccparse_string(cf, txt, *parse);
@@ -334,7 +336,7 @@ int ccdoc_parse_attribute(ccfile_s* cf, const char** parse, substr_s* txt){
 void ccdoc_parse_skip_arg(ccfile_s* cf, const char** parse){
 	++(*parse);
 	strtol(*parse, (char**)parse, 10);
-	if( !parse || !*parse ) die("wrong arg command desc");
+	if( !*parse || !**parse || (*parse)[-1] < '0' || (*parse)[-1] > '9'  ) ccdoc_die(cf, *parse, "wrong arg command desc, aspected numbers");
 	substr_s tmp;
 	*parse = ccparse_string(cf, &tmp, str_skip_hn(*parse));
 	*parse = ccparse_skip_hn(*parse);
@@ -352,10 +354,10 @@ substr_s* ccdoc_parse_args(ccfile_s* cf, substr_s* desc, size_t count){
 			++parse;
 			continue;
 		}
-		++parse;
+		const char* stnum = ++parse;
 		int argid = strtol(parse, (char**)&parse, 10);
-		if( !parse || !*parse ) die("wrong arg command desc");
-		if( argid >= (int)count ) die("function accept %lu arguments", count);
+		if( !parse || !*parse || parse[-1] < '0' || parse[-1] > '9'  ) ccdoc_die(cf, stnum, "wrong arg command desc, aspected numbers");
+		if( argid >= (int)count ) ccdoc_die(cf, stnum, "function accept %lu arguments", count);
 		parse = ccparse_string(cf, &vsub[argid], str_skip_hn(parse));
 		parse = ccparse_skip_hn(parse);
 	}
