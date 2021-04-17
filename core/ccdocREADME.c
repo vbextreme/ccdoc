@@ -89,17 +89,17 @@ __private void md_attribute(char** out, int type, substr_s* txt){
 		case 0: ds_sprintf(out, ds_len(*out), "**%.*s**", substr_format(txt)); break;
 		case 1: ds_sprintf(out, ds_len(*out), "_%.*s_", substr_format(txt)); break;
 		case 2: ds_sprintf(out, ds_len(*out), "~~%.*s~~", substr_format(txt)); break;
-		default: die("unknown format");
+		default: die("internal error: unknown format");
 	}
 }
 
 __private void md_push_ref(char** page, ref_s* ref, void* ctx){
 	switch( ref->type ){
-		default: case REF_REF: die("wrong ref"); break;
+		default: case REF_REF: die("internal error: wrong ref"); break;
 		case REF_FILE:{
 			ccdoc_s* ccdoc = ctx;
 			fconfigVar_s* wikiSite = fconfig_get(ccdoc->fc, CCDOC_CONF_WIKI_SITE, str_len(CCDOC_CONF_WIKI_SITE));
-			if( !wikiSite || wikiSite->type != FCVAR_STR ) die("wrong wiki config");
+			if( !wikiSite || wikiSite->type != FCVAR_STR ) die("set " CCDOC_CONF_WIKI_SITE " on cc.doc");
 			__mem_free char* flink = ds_printf("%s/%.*s", wikiSite->fcstr, substr_format(&ref->name));
 			md_link(page, ref->name.begin, substr_len(&ref->name), flink, ds_len(flink));
 			break;
@@ -250,7 +250,7 @@ __private void desc_parse(ccfile_s* cf, char** page, ccdoc_s* ccdoc, substr_s* d
 					ds_cat(page, "*/", 0);
 				break;
 
-				default: die("unknown command desc @%c", *parse); break;
+				default: ccdoc_die(cf, parse, "unknown command desc"); break;
 			}
 		}
 		else if( incode && *parse == CCDOC_DESC_COMMAND && *(parse+1) == CCDOC_DC_CODE_E ){

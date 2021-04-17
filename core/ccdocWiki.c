@@ -13,7 +13,7 @@ __private char* md_link_escape(const char* str, size_t len){
 __private void build_md_sidebar(ccdoc_s* ccdoc, const char* destdir){
 	__mem_free char* side = ds_new(CCDOC_STRING_SIZE);
 	fconfigVar_s* wikiSite = fconfig_get(ccdoc->fc, CCDOC_CONF_WIKI_SITE, str_len(CCDOC_CONF_WIKI_SITE));
-	if( !wikiSite || wikiSite->type != FCVAR_STR ) die("wrong wiki config");
+	if( !wikiSite || wikiSite->type != FCVAR_STR ) die("set " CCDOC_CONF_WIKI_SITE " on cc.doc");
 	vector_foreach(ccdoc->vfiles, i){
 		__mem_free char* lk = md_link_escape(ccdoc->vfiles[i].name.begin, substr_len(&ccdoc->vfiles[i].name));
 		ds_sprintf(&side, ds_len(side), "* [%.*s](%s/%s)\n", substr_format(&ccdoc->vfiles[i].name), wikiSite->fcstr, lk);
