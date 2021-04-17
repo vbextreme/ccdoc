@@ -102,7 +102,7 @@ read [Comment Command](https://github.com/vbextreme/ccdoc/wiki/Comment%20Command
 
 
 ## News
-**1.1.0** fix err fd, fix reading meson version, add show error<br />
+**1.1.0** fix err fd, fix reading meson version, begin to show error on error<br />
 
 **1.0.2** fix build<br />
 

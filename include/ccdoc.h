@@ -168,7 +168,7 @@ typedef enum{
 }cmdtype_e;
 
 const char* cparse_comment_command(substr_s* out, const char* code);
-const char* cparse_definition_get(cdef_s* def, const char* code);
+const char* cparse_definition_get(ccfile_s* cf, cdef_s* def, const char* code);
 
 const char* ccparse_skip_hn(const char* code);
 const char* ccparse_string(substr_s* out, const char* comment);
@@ -179,8 +179,12 @@ void ccparse_str(ref_s* ref, substr_s* comment);
 void ccparse_file(ccfile_s* file, substr_s* comment);
 void ccparse_sel(substr_s* out, substr_s* comment);
 void ccparse_visual(visual_e* out, substr_s* comment);
-const char* ccparse_def(ccdef_s* def, substr_s* comment);
+const char* ccparse_def(ccfile_s* cf, ccdef_s* def, substr_s* comment);
 
+__printf(4,5)
+void ccdoc_diefc(const char* file, const char* code, const char* begin, const char* f, ...);
+__printf(3,4)
+void ccdoc_die(ccfile_s* cf, const char* begin, const char* f, ...);
 ccdoc_s* ccdoc_new(const char* fpath);
 void ccdoc_load(ccdoc_s* ccdoc, const char* file);
 void ccdoc_copy_css(const char* destdir, const char* srcdir);

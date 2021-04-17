@@ -54,7 +54,7 @@ __private void ccdoc_vdie(const char* file, const char* code, const char* begin,
 }
 
 __printf(3,4)
-__private void ccdoc_die(ccfile_s* cf, const char* begin, const char* f, ...){
+void ccdoc_die(ccfile_s* cf, const char* begin, const char* f, ...){
 	va_list varg;
 	va_start(varg, f);
 	if( cf ){
@@ -67,7 +67,7 @@ __private void ccdoc_die(ccfile_s* cf, const char* begin, const char* f, ...){
 }
 
 __printf(4,5)
-__private void ccdoc_diefc(const char* file, const char* code, const char* begin, const char* f, ...){
+void ccdoc_diefc(const char* file, const char* code, const char* begin, const char* f, ...){
 	va_list varg;
 	va_start(varg, f);
 	ccdoc_vdie(file, code, begin, f, varg);
@@ -113,7 +113,7 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 	const char* startcode = code;
 	substr_s command;
 	ccdoc->fsel = NULL;
-	const char* errbg = code;
+	const char* errbg;
 	code = cparse_comment_command(&command, code);
 	do{
 		cmdtype_e cmdtype;
@@ -166,7 +166,7 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 				if( !ref ){
 					ccdoc_die(ccdoc->fsel, fname.begin, "-file '%.*s', not exists", (int)substr_len(&fname), fname.begin);
 				}
-				if( ref->type != REF_FILE ){
+				else if( ref->type != REF_FILE ){
 					ccdoc_die(ccdoc->fsel, fname.begin, "-file '%.*s', is not a reference", (int)substr_len(&fname), fname.begin);
 				}
 				ccdoc->fsel = ref->data;
@@ -190,7 +190,7 @@ void ccdoc_load(ccdoc_s* ccdoc, const char* file){
 				ccdef_s* ccd = vector_push_ref(ccdoc->fsel->vdefs);
 				memset(ccd, 0, sizeof(ccdef_s));
 				ccd->parent = ccdoc->fsel;
-				code = ccparse_def(ccd, &command);
+				code = ccparse_def(ccdoc->fsel, ccd, &command);
 				if( ccd->def.velement ) mem_link(ccdoc, ccd->def.velement);
 				ccdoc_ref_new(ccdoc, REF_DEF, &ccd->def.name, &SSNULL, ccd);
 				break;

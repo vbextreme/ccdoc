@@ -151,9 +151,9 @@ void ccparse_sel(substr_s* out, substr_s* comment){
 /*- decript
  * descript
  */
-const char* ccparse_def(ccdef_s* def, substr_s* comment){
+const char* ccparse_def(ccfile_s* cf, ccdef_s* def, substr_s* comment){
 	def->comment = *comment;
-	return cparse_definition_get(&def->def, comment->end + str_len(_COMMENT_CLOSE));
+	return cparse_definition_get(cf, &def->def, comment->end + str_len(_COMMENT_CLOSE));
 }
 
 

@@ -129,7 +129,7 @@ __private const char* cparse_macro(cdef_s* def, const char* code){
 	return code;
 }
 
-__private const char* cparse_type(cdef_s* def, const char* code){
+__private const char* cparse_type(ccfile_s* cf, cdef_s* def, const char* code){
 	def->code.begin = code;
 	int td = 0;
 	if( !strncmp(code, _TYPEDEF, str_len(_TYPEDEF)) ){
@@ -147,11 +147,13 @@ __private const char* cparse_type(cdef_s* def, const char* code){
 
 	def->typedec.end = def->name.end;
 
-	if( code[-1] != _SCOPE_OPEN ) die("aspect open scope");
+	if( code[-1] != _SCOPE_OPEN ){
+		ccdoc_die(cf, &code[-1], "aspect open scope");
+	}
 
 	if( !strncmp(def->typedec.begin, _STRUCT, str_len(_STRUCT)) ) def->type = C_STRUCT;
 	else if( !strncmp(def->typedec.begin, _ENUM, str_len(_ENUM)) ) def->type = C_ENUM;
-	else die("unknown type");
+	else ccdoc_die(cf, def->typedec.begin, "unknown type");
 	
 	def->velement = vector_new(celement_s, 4);	
 	code = cparse_token_next(code);
@@ -175,7 +177,7 @@ __private const char* cparse_type(cdef_s* def, const char* code){
 		else{
 			code = cparse_token_next(cparse_token(&def->name, code));
 		}
-		if( *code != _ENDL ) die("aspect end line after struct or enum");
+		if( *code != _ENDL ) ccdoc_die(cf, code, "aspect end line(;) after struct or enum");
 		def->code.end = ++code;
 	}
 	else if( def->type == C_ENUM ){
@@ -197,7 +199,7 @@ __private const char* cparse_type(cdef_s* def, const char* code){
 		else{
 			code = cparse_token_next(cparse_token(&def->name, code));
 		}
-		if( *code != _ENDL ) die("aspect end line after struct or enum");
+		if( *code != _ENDL ) ccdoc_die(cf, code, "aspect end line(;) after struct or enum");
 		def->code.end = ++code;
 	}
 
@@ -237,7 +239,7 @@ __private const char* cparse_fn(cdef_s* def, const char* code){
 	return code;
 }
 
-const char* cparse_definition_get(cdef_s* def, const char* code){
+const char* cparse_definition_get(ccfile_s* cf, cdef_s* def, const char* code){
 	substr_s token;
 	code = cparse_token_next(code);
 	if( !*code ) return code;
@@ -262,7 +264,7 @@ const char* cparse_definition_get(cdef_s* def, const char* code){
 		!strncmp(code, _ENUM, str_len(_ENUM))
 	){
 		dbg_info("new type");
-		return cparse_type(def,code);
+		return cparse_type(cf, def,code);
 	}
 	
 	dbg_info("function");
