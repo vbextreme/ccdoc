@@ -230,14 +230,14 @@ __private void html_bis(char** dest, ccdocHTML_s* html, substr_s* desc, int type
 		case 0: ds_cat(dest, html->tdef[I_BOLD_BEGIN].begin, substr_len(&html->tdef[I_BOLD_BEGIN])); break;
 		case 1: ds_cat(dest, html->tdef[I_ITALIC_BEGIN].begin, substr_len(&html->tdef[I_ITALIC_BEGIN])); break;
 		case 2: ds_cat(dest, html->tdef[I_STRIKE_BEGIN].begin, substr_len(&html->tdef[I_STRIKE_BEGIN])); break;
-		default: die("unknown text format type"); break;
+		default: die("internal error: unknown text format type"); break;
 	}
 	ds_cat(dest, desc->begin, substr_len(desc));
 	switch(type){
 		case 0: ds_cat(dest, html->tdef[I_BOLD_END].begin, substr_len(&html->tdef[I_BOLD_END])); break;
 		case 1: ds_cat(dest, html->tdef[I_ITALIC_END].begin, substr_len(&html->tdef[I_ITALIC_END])); break;
 		case 2: ds_cat(dest, html->tdef[I_STRIKE_END].begin, substr_len(&html->tdef[I_STRIKE_END])); break;
-		default: die("unknown text format type"); break;
+		default: die("internal error: unknown text format type"); break;
 	}
 }
 
@@ -274,7 +274,7 @@ __private void html_push_ref(char** dest, ref_s* ref, void* ctx){
 			break;
 		}
 
-		default: case REF_REF: die("wrong ref"); break;
+		default: case REF_REF: die("internal error: wrong ref"); break;
 	}
 
 }
@@ -340,8 +340,8 @@ __private char* desc_parse(ccfile_s* cf, ccdoc_s* ccdoc, ccdocHTML_s* html, int 
 					substr_s argdesc;
 					int argid;
 					ccdoc_parse_arg(cf, &parse, &argid, &argdesc); 
-					if( !vargs ) die("cparse fail reading args");
-					if( argid >= (ssize_t)vector_count(vargd) ) die("argument not exists");
+					if( !vargs ) ccdoc_die(cf, argdesc.begin, "no arguments in C code");
+					if( argid >= (ssize_t)vector_count(vargd) ) ccdoc_die(cf, argdesc.begin, "argument not exists");
 					ds_cat(&vargd[argid], argdesc.begin, substr_len(&argdesc));
 					break;
 				}
@@ -417,7 +417,7 @@ __private char* desc_parse(ccfile_s* cf, ccdoc_s* ccdoc, ccdocHTML_s* html, int 
 					ds_cat(&desc, "*/", 0);
 				break;
 
-				default: die("unknown command desc @%c", *parse); break;
+				default: ccdoc_die(cf, parse, "unknown command desc"); break;
 			}
 		}
 		else if( incode && *parse == CCDOC_DESC_COMMAND && *(parse+1) == CCDOC_DC_CODE_E ){
