@@ -129,6 +129,44 @@ __private const char* cparse_macro(cdef_s* def, const char* code){
 	return code;
 }
 
+__private const char* cparse_type_ptrfn(ccfile_s* cf, cdef_s* def, const char* code){
+	if( *code != _ARGS_OPEN ){
+		ccdoc_die(cf, code, "aspect open scope or ( in declered ptr function");
+	}
+	code = str_skip_hn(code+1);
+	if( *code != '*' ){
+		ccdoc_die(cf, code, "aspect open scope or * in declered ptr function");
+	}
+	code = str_skip_hn(code+1);
+
+	def->ret.type = def->typedec;
+	code = str_skip_hn(cparse_token(&def->name, code));
+	if( *code != _ARGS_CLOSE ){
+		ccdoc_die(cf, code, "aspect closed )");
+	}
+	code = str_skip_hn(code+1);
+	if( *code != _ARGS_OPEN ){
+		ccdoc_die(cf, code, "aspect open (");
+	}
+	code = str_skip_hn(code+1);
+
+	def->velement = vector_new(celement_s, 4);
+	while( *code && code[-1] != _ARGS_CLOSE ){
+		celement_s* ce = vector_push_ref(def->velement);
+		memset(ce, 0, sizeof(celement_s));
+		code = cparse_declar(&ce->type, &ce->name, code);
+		code = cparse_comment_obj(&ce->desc, code);
+		dbg_info("ptrfn.arg:(%.*s)%.*s::%.*s", substr_format(&ce->type), substr_format(&ce->name), substr_format(&ce->desc));
+		code = cparse_token_next(code);
+	}
+
+	if( *code ) ++code;
+	def->code.end = code;
+	dbg_info("ptrfn:%.*s", substr_format(&def->name));
+	dbg_info("code:%.*s", substr_format(&def->code));
+	return code;
+}
+
 __private const char* cparse_type(ccfile_s* cf, cdef_s* def, const char* code){
 	def->code.begin = code;
 	int td = 0;
@@ -148,7 +186,9 @@ __private const char* cparse_type(ccfile_s* cf, cdef_s* def, const char* code){
 	def->typedec.end = def->name.end;
 
 	if( code[-1] != _SCOPE_OPEN ){
-		ccdoc_die(cf, &code[-1], "aspect open scope");
+		def->type = C_TYPE;
+		code = cparse_type_ptrfn(cf, def, code-1);
+		return code;
 	}
 
 	if( !strncmp(def->typedec.begin, _STRUCT, str_len(_STRUCT)) ) def->type = C_STRUCT;
