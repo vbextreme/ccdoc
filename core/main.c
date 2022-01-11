@@ -30,7 +30,7 @@
  * destdir_html   = ./doc/html                     // default value where stored .html
  * destdir_readme = ./doc/md                       // default value where stored README.md
  * destdir_wiki   = ./doc/wiki                     // default value where stored wiki files
- * destdir_readme = ./doc/man                      // default value where stored man files
+ * destdir_man    = ./doc/man                      // default value where stored man files
  * meson_path     = ./meson.build                  // if you use meson, ccdoc read this file for get version and type of software
  * template_html  = /usr/share/ccdoc/template.html // default value
  * template_css   = /usr/share/ccdoc/template      // default value where read all css files to copy in destdir_html
